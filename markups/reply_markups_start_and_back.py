@@ -6,7 +6,8 @@ def create_incident_kb() -> ReplyKeyboardMarkup:
     b1 = KeyboardButton('Создать Инцидент')
     b2 = KeyboardButton('Закрыть Инцидент')
     b3 = KeyboardButton('Редактировать Инцидент')
-    k_incident.add(b1, b2, b3)
+    b4 = KeyboardButton('/start')
+    k_incident.add(b1, b2).add(b3).add(b4)
     return k_incident
 
 
