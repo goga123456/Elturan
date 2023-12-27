@@ -8,6 +8,17 @@ class Database:
     async def connect(self):
         return await asyncpg.connect(dsn=self.db_url)
 
+
+    async def is_inc_number_unique(self, inc_number):
+        conn = await self.connect()
+        try:
+            # Проверяем, существует ли запись с таким inc_number
+            result = await conn.fetchrow('SELECT * FROM incidents WHERE inc_number = $1', inc_number)
+            return result is None  # Возвращаем True, если такой номер не найден (уникален)
+        finally:
+            await conn.close()
+    
+
     async def insert(self, inc_number, inc_category, desc, priority, status):
         conn = await self.connect()
         try:
