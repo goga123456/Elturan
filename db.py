@@ -9,16 +9,16 @@ class Database:
         return await asyncpg.connect(dsn=self.db_url)
 
     async def insert(self, inc_number, inc_category, desc, priority, status):
-    conn = await self.connect()
-    try:
-        # Преобразование priority в целое число
-        priority_int = int(priority)
+        conn = await self.connect()
+        try:
+            # Преобразование priority в целое число
+            priority_int = int(priority)
 
-        await conn.execute(
-            'INSERT INTO incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
-            inc_number, inc_category, desc, priority_int, status)
-    finally:
-        await conn.close()
+            await conn.execute(
+                'INSERT INTO incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
+                inc_number, inc_category, desc, priority_int, status)
+        finally:
+            await conn.close()
 
     async def incidents(self):
         conn = await self.connect()
