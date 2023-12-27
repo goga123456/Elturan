@@ -12,7 +12,7 @@ class Database:
         conn = await self.connect()
         try:
             await conn.execute(
-                'INSERT INTO incidents (inc_number, inc_category, desc, priority, status) VALUES ($1, $2, $3, $4, $5);',
+                'INSERT INTO incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
                 inc_number, inc_category, desc, priority, status)
         finally:
             await conn.close()
