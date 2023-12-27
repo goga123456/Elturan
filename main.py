@@ -92,7 +92,7 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['number'] = message.text
-        if await baza.is_inc_number_unique(data['number']):
+        if not await baza.is_inc_number_unique(data['number']):
             await bot.send_message(chat_id=message.from_user.id,
                                    text="Инцидент с таким номером уже существует")
         else:
