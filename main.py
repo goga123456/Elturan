@@ -115,10 +115,14 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
     else:
         async with state.proxy() as data:
             data['desc'] = message.text
-        await bot.send_message(chat_id=message.from_user.id,
-                               text="Приоритет:",
-                               reply_markup=priority_kb())
-        await ProfileStatesGroup.priority.set()
+        if len(data['desc'])>4000:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Слишком большое количество символов")  
+        else:  
+            await bot.send_message(chat_id=message.from_user.id,
+                          text="Приоритет:",
+                          reply_markup=priority_kb())
+            await ProfileStatesGroup.priority.set()
 
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
