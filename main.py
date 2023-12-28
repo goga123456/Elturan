@@ -115,7 +115,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
     else:
         async with state.proxy() as data:
             data['desc'] = message.text
-        if len(data['desc'])>4000:
+        if len(data['desc'])>2000:
             await bot.send_message(chat_id=message.from_user.id,
                                    text="Слишком большое количество символов")  
         else:  
