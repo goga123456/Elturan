@@ -82,6 +82,13 @@ class Database:
         finally:
             await conn.close()
 
+    async def delete_incident_from_deleted(self, inc_number):
+        conn = await self.connect()
+        try:
+            await conn.execute('DELETE FROM closed_incidents WHERE inc_number = $1', inc_number)
+        finally:
+            await conn.close()
+    
     async def update_status(self, status, inc_number):
         conn = await self.connect()
         try:
