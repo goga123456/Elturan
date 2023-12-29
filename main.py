@@ -135,7 +135,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                            f"Приоритет: {date[4]}\n"
                                            f"Категория: {date[2]}\n"
                                            f"Описание: {date[3]}\n")
-        await baza.insert_deleted(date(1), date(2), date(3), date(4), "Закрыт")
+        await baza.insert_deleted(date(1), date(2), date(3), date(4), 'Закрыт')
         await baza.delete_incident(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
