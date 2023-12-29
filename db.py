@@ -67,6 +67,15 @@ class Database:
         finally:
             await conn.close()
 
+    async def select_closed_incident(self, inc_number):
+        conn = await self.connect()
+        try:
+            result = await conn.fetchrow('SELECT * FROM closed_incidents WHERE inc_number = $1', inc_number)
+            return result
+        finally:
+            await conn.close()
+    
+
     async def select_priority(self, inc_number):
         conn = await self.connect()
         try:
