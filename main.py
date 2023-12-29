@@ -93,6 +93,11 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
                                text="Выберите номер инцидента:",
                                reply_markup=await incidents())
         await ProfileStatesGroup.edit_incident.set()
+    if message.text == "Восстановить инцидент":
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Выберите номер инцидента:",
+                               reply_markup=await closed_incidents())
+        await ProfileStatesGroup.recovery_incident.set()  
 
 
 
@@ -132,6 +137,23 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           reply_markup=priority_kb())
             await ProfileStatesGroup.priority.set()
 
+@dp.callback_query_handler(state=ProfileStatesGroup.recovery_incident)
+async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        data['choose'] = callback_query.data
+        date = await baza.select_incident(data['choose'])
+        await bot.send_message(CHANNEL_ID, f"Инцидент открыт\n"
+                                           f"Номер инцидента: {date[1]}\n"
+                                           f"Приоритет: {date[4]}\n"
+                                           f"Категория: {date[2]}\n"
+                                           f"Описание: {date[3]}\n")
+        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')
+        await baza.delete_incident(data['choose'])
+        await callback_query.message.delete()
+        await bot.send_message(chat_id=callback_query.message.chat.id,
+                               text=f"Инцидент с номером {data['choose']} закрыт",
+                               reply_markup=create_incident_kb())
+        await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
