@@ -38,7 +38,7 @@ class Database:
             priority_int = int(priority)
 
             await conn.execute(
-                'INSERT INTO deleted_incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
+                'INSERT INTO closed_incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
                 inc_number, inc_category, desc, priority_int, status)
         finally:
             await conn.close()   
