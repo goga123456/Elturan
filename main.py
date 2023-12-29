@@ -141,7 +141,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
-        date = await baza.select_incident(data['choose'])
+        date = await baza.select_closed_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"Инцидент открыт заново\n"
                                            f"Номер инцидента: {data[1]}\n"
                                            f"Приоритет: {date[4]}\n"
