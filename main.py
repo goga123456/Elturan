@@ -95,6 +95,7 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
         await ProfileStatesGroup.edit_incident.set()
 
 
+
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.number_of_incident)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
