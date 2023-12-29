@@ -93,7 +93,7 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
                                text="Выберите номер инцидента:",
                                reply_markup=await incidents())
         await ProfileStatesGroup.edit_incident.set()
-    if message.text == "Восстановить инцидент":
+    if message.text == "Восстановить Инцидент":
         await bot.send_message(chat_id=message.from_user.id,
                                text="Выберите номер инцидента:",
                                reply_markup=await closed_incidents())
