@@ -31,6 +31,18 @@ class Database:
         finally:
             await conn.close()
 
+    async def insert_deleted(self, inc_number, inc_category, desc, priority, status):
+        conn = await self.connect()
+        try:
+            # Преобразование priority в целое число
+            priority_int = int(priority)
+
+            await conn.execute(
+                'INSERT INTO deleted_incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
+                inc_number, inc_category, desc, priority_int, status)
+        finally:
+            await conn.close()   
+
     async def incidents(self):
         conn = await self.connect()
         try:
