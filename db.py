@@ -51,6 +51,14 @@ class Database:
         finally:
             await conn.close()
 
+    async def closed_incidents(self):
+        conn = await self.connect()
+        try:
+            result = await conn.fetch('SELECT inc_number FROM closed_incidents')
+            return result
+        finally:
+            await conn.close()
+
     async def select_incident(self, inc_number):
         conn = await self.connect()
         try:
