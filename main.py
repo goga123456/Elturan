@@ -162,7 +162,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         run_time3 = datetime.now() + timedelta(seconds=30)
         run_time4 = datetime.now() + timedelta(seconds=40)
         run_time5 = datetime.now() + timedelta(seconds=50)
-        if date[4] == '1':
+        if date[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
