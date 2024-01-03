@@ -169,7 +169,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
         if data['priority'] == '2':
@@ -179,7 +179,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
         if data['priority'] == '3':
@@ -189,17 +189,17 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
         if data['priority'] == '4':
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
         if data['priority'] == '5':
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
 
