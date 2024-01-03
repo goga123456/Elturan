@@ -162,7 +162,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         run_time3 = datetime.now() + timedelta(seconds=30)
         run_time4 = datetime.now() + timedelta(seconds=40)
         run_time5 = datetime.now() + timedelta(seconds=50)
-        if data['priority'] == '1':
+        if date[4] == '1':
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
@@ -172,7 +172,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if data['priority'] == '2':
+        if date[4] == '2':
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
@@ -182,7 +182,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if data['priority'] == '3':
+        if date[4] == '3':
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
@@ -192,12 +192,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if data['priority'] == '4':
+        if date[4] == '4':
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if data['priority'] == '5':
+        if date[4] == '5':
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
