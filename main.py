@@ -278,6 +278,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 scheduler.add_job(prosrochen, "date", run_date=run_time2,
                                   args=[data['number'], data['priority'], data['category'], data['desc']],
                                   max_instances=1)
+                scheduled_tasks[data['number']] = job
             if data['priority'] == '3':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
@@ -287,14 +288,17 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 scheduler.add_job(prosrochen, "date", run_date=run_time3,
                                   args=[data['number'], data['priority'], data['category'], data['desc']],
                                   max_instances=1)
+                scheduled_tasks[data['number']] = job
             if data['priority'] == '4':
                 scheduler.add_job(prosrochen, "date", run_date=run_time4,
                                   args=[data['number'], data['priority'], data['category'], data['desc']],
                                   max_instances=1)
+                scheduled_tasks[data['number']] = job
             if data['priority'] == '5':
                 scheduler.add_job(prosrochen, "date", run_date=run_time5,
                                   args=[data['number'], data['priority'], data['category'], data['desc']],
                                   max_instances=1)
+                scheduled_tasks[data['number']] = job
 
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
