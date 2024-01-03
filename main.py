@@ -369,7 +369,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.from_user.id, text=data['category'])
         await bot.send_message(chat_id=callback_query.from_user.id,
-                               text="Описание:", reply_markup=get_start_and_back_kb())
+                               text="Описание:", reply_markup=get_start_kb())
         await ProfileStatesGroup.description.set()
     if callback_query.data == 'back':
         async with state.proxy() as data:
