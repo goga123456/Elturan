@@ -173,7 +173,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        if inc_number in scheduled_tasks:
+        if date[1] in scheduled_tasks:
             scheduled_tasks[date[1]].remove()
             del scheduled_tasks[date[1]]
         await ProfileStatesGroup.main_menu.set()
