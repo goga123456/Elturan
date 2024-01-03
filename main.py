@@ -19,6 +19,8 @@ import logging
 from db import Database
 CHANNEL_ID = -1002018175768
 
+scheduled_tasks = {}
+
 
 storage = MemoryStorage()
 TOKEN = os.getenv('BOT_TOKEN')
@@ -171,6 +173,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
+        if inc_number in scheduled_tasks:
+            scheduled_tasks[date[1]].remove()
+            del scheduled_tasks[date[1]]
         await ProfileStatesGroup.main_menu.set()
 
 
@@ -260,9 +265,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 scheduler.add_job(delete_msg, "date", run_date=run_time,
                                   args=[message_id],
                                   max_instances=1)
-                scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                                   args=[data['number'], data['priority'], data['category'], data['desc']],
                                   max_instances=1)
+                scheduled_tasks[data['number']] = job
             if data['priority'] == '2':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
