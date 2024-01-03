@@ -14,13 +14,10 @@ import os
 import asyncpg
 from aiogram.utils.executor import start_webhook
 import logging
-
-
 from db import Database
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
-
 
 storage = MemoryStorage()
 TOKEN = os.getenv('BOT_TOKEN')
@@ -29,16 +26,13 @@ dp = Dispatcher(bot,
                 storage=storage)
 
 HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
-
 # webhook settings
 WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
 WEBHOOK_PATH = f'/webhook/{TOKEN}'
 WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
-
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
-
 baza = Database()
 scheduler = AsyncIOScheduler()
 
@@ -89,6 +83,9 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
         await bot.send_message(chat_id=message.from_user.id,
                                text="Выберите номер инцидента:",
                                reply_markup=await incidents())
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="После выбора инцидент будет закрыт",
+                               reply_markup=get_start_kb())
         await ProfileStatesGroup.close_incident.set()
     if message.text == "Редактировать Инцидент":
         await bot.send_message(chat_id=message.from_user.id,
@@ -118,8 +115,6 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                    text="Категория инцидента:",
                                    reply_markup=inc_category_kb())
             await ProfileStatesGroup.category_of_incident.set()
-
-
 
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
@@ -235,7 +230,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     await bot.send_message(chat_id=callback_query.from_user.id, text="Выберите действие", reply_markup=edit_kb())
     await ProfileStatesGroup.edit_incident_kb.set()
 
-
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident_kb)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "change priority":
@@ -262,7 +256,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.message.delete()
         await ProfileStatesGroup.main_menu.set()
 
-
 @dp.callback_query_handler(state=ProfileStatesGroup.change_priority)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if (
@@ -286,7 +279,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                    text="Выберите действие",
                                    reply_markup=edit_kb())
             await ProfileStatesGroup.edit_incident_kb.set()
-
 
 @dp.callback_query_handler(state=ProfileStatesGroup.priority)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
@@ -377,7 +369,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await bot.send_message(chat_id=callback_query.message.chat.id,
                                    text="Номер инцидента:")
             await ProfileStatesGroup.number_of_incident.set()
-
 
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True, max_connections=100)
