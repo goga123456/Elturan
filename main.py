@@ -203,7 +203,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               max_instances=1)
             scheduled_tasks[data['number']] = job
 
-        await ProfileStatesGroup.main_menu.set()
+    await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
