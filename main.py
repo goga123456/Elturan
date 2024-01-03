@@ -155,6 +155,54 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} открыт заново",
                                reply_markup=create_incident_kb())
+
+        run_time = datetime.now() + timedelta(seconds=5)
+        run_time1 = datetime.now() + timedelta(seconds=10)
+        run_time2 = datetime.now() + timedelta(seconds=20)
+        run_time3 = datetime.now() + timedelta(seconds=30)
+        run_time4 = datetime.now() + timedelta(seconds=40)
+        run_time5 = datetime.now() + timedelta(seconds=50)
+        if data['priority'] == '1':
+            msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if data['priority'] == '2':
+            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if data['priority'] == '3':
+            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if data['priority'] == '4':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if data['priority'] == '5':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+
         await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
