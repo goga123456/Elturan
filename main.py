@@ -56,15 +56,17 @@ async def incidents() -> InlineKeyboardMarkup:
         markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
     return markup
 
+
+
 async def closed_incidents() -> InlineKeyboardMarkup:
-    markup = InlineKeyboardMarkup()
-    markup.row_width = 2
+    markup = InlineKeyboardMarkup(row_width=2)
     incidents_list = await baza.closed_incidents()
+
     for i in incidents_list:
-        markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
+        button = InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}')
+        markup.insert(button)
+
     return markup
-
-
 
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
