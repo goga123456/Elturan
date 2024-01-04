@@ -271,7 +271,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await baza.update_priority(int(data['priority']), data['choose'])
         date = await baza.select_incident(data['choose'])
         await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
-        await callback_query.message.delete()
+        #await callback_query.message.delete()
         await bot.send_message(CHANNEL_ID, text=f"{date[5]}\n"
                                                 f"Номер инцидента: {date[1]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
@@ -291,9 +291,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            #scheduler.add_job(delete_msg, "date", run_date=run_time,
-            #                  args=[message_id],
-            #                  max_instances=1)
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
@@ -301,9 +301,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            #scheduler.add_job(delete_msg, "date", run_date=run_time,
-            #                  args=[message_id],
-            #                  max_instances=1)
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
@@ -311,9 +311,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            #scheduler.add_job(delete_msg, "date", run_date=run_time,
-            #                  args=[message_id],
-            #                  max_instances=1)
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
