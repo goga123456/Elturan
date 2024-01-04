@@ -50,7 +50,7 @@ async def prosrochen(number, priority, category, desc):
                                        f"Описание: {desc}\n")
 async def incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
-    markup.row_width = 1
+    markup.row_width = 2
     incidents_list = await baza.incidents()
     for i in incidents_list:
         markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
@@ -58,7 +58,7 @@ async def incidents() -> InlineKeyboardMarkup:
 
 async def closed_incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
-    markup.row_width = 1
+    markup.row_width = 2
     incidents_list = await baza.closed_incidents()
     for i in incidents_list:
         markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
