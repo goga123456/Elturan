@@ -48,15 +48,20 @@ async def prosrochen(number, priority, category, desc):
                                        f"Приоритет: {priority}\n"
                                        f"Категория: {category}\n"
                                        f"Описание: {desc}\n")
+
 async def incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
-    markup.row_width = 2
     incidents_list = await baza.incidents()
-    for i in incidents_list:
-        markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
+
+    # Итерируем по списку инцидентов, создавая новый ряд каждые два элемента
+    for i in range(0, len(incidents_list), 2):
+        # Создаем кнопки для текущего ряда
+        buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[i:i+2]]
+        
+        # Добавляем ряд в разметку
+        markup.row(*buttons)
+
     return markup
-
-
 
 
 
