@@ -277,6 +277,55 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Приоритет изменён на {date[4]}\n"
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
+
+        run_time = datetime.now() + timedelta(seconds=5)
+        run_time1 = datetime.now() + timedelta(seconds=10)
+        run_time2 = datetime.now() + timedelta(seconds=20)
+        run_time3 = datetime.now() + timedelta(seconds=30)
+        run_time4 = datetime.now() + timedelta(seconds=40)
+        run_time5 = datetime.now() + timedelta(seconds=50)
+        if dates[4] == 1:
+            msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if dates[4] == 2:
+            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if dates[4] == 3:
+            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
+            message_id = msg.message_id
+            scheduler.add_job(delete_msg, "date", run_date=run_time,
+                              args=[message_id],
+                              max_instances=1)
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if dates[4] == 4:
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        if dates[4] == 5:
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
+            scheduled_tasks[data['number']] = job
+        
+              
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
