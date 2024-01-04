@@ -278,6 +278,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
+        if date[1] in scheduled_tasks:
+            scheduled_tasks[date[1]].remove()
+            del scheduled_tasks[date[1]]      
+
         run_time = datetime.now() + timedelta(seconds=5)
         run_time1 = datetime.now() + timedelta(seconds=10)
         run_time2 = datetime.now() + timedelta(seconds=20)
