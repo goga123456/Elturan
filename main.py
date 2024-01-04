@@ -81,20 +81,26 @@ async def cmd_start(message: types.Message, state: FSMContext) -> InlineKeyboard
         await ProfileStatesGroup.number_of_incident.set()
     if message.text == "Закрыть Инцидент":
         await bot.send_message(chat_id=message.from_user.id,
-                               text="Выберите номер инцидента:",
-                               reply_markup=await incidents())
-        await bot.send_message(chat_id=message.from_user.id,
-                               text="После выбора инцидент будет закрыт",
+                               text="Выберите инцидент ,который хотите закрыть",
                                reply_markup=get_start_kb())
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Список инцидентов",
+                               reply_markup=await incidents())
         await ProfileStatesGroup.close_incident.set()
     if message.text == "Редактировать Инцидент":
         await bot.send_message(chat_id=message.from_user.id,
-                               text="Выберите номер инцидента:",
+                               text="Выберите инцидент ,который хотите редактировать",
+                               reply_markup=get_start_kb())
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Список инцидентов:",
                                reply_markup=await incidents())
         await ProfileStatesGroup.edit_incident.set()
     if message.text == "Восстановить Инцидент":
         await bot.send_message(chat_id=message.from_user.id,
-                               text="Выберите номер инцидента:",
+                               text="Выберите инцидент ,который хотите восстановить",
+                               reply_markup=get_start_kb())
+        await bot.send_message(chat_id=message.from_user.id,
+                               text="Список инцидентов:",
                                reply_markup=await closed_incidents())
         await ProfileStatesGroup.recovery_incident.set()  
 
