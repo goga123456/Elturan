@@ -57,13 +57,7 @@ async def incidents() -> InlineKeyboardMarkup:
     return markup
 
 
-async def closed_incidents() -> InlineKeyboardMarkup:
-    markup = InlineKeyboardMarkup()
-    markup.row_width = 2
-    incidents_list = await baza.closed_incidents()
-    for i in incidents_list:
-        markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
-    return markup
+
 
 
 async def closed_incidents() -> InlineKeyboardMarkup:
