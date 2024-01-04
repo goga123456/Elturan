@@ -57,25 +57,11 @@ async def incidents() -> InlineKeyboardMarkup:
     return markup
 
 async def closed_incidents() -> InlineKeyboardMarkup:
-    markup = InlineKeyboardMarkup(row_width=2)
+    markup = InlineKeyboardMarkup()
+    markup.row_width = 2
     incidents_list = await baza.closed_incidents()
-    
-    # Создаем временный список для хранения кнопок текущего ряда
-    temp_row = []
-
     for i in incidents_list:
-        # Добавляем кнопку во временный список
-        temp_row.append(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
-
-        # Когда в ряду 2 кнопки, добавляем их в разметку и очищаем временный список
-        if len(temp_row) == 2:
-            markup.row(*temp_row)
-            temp_row = []
-
-    # Добавляем оставшиеся кнопки, если они есть
-    if temp_row:
-        markup.row(*temp_row)
-
+        markup.add(InlineKeyboardButton(f'{i[0]}', callback_data=f'{i[0]}'))
     return markup
 
 
