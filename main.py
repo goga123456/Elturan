@@ -291,9 +291,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
+            #scheduler.add_job(delete_msg, "date", run_date=run_time,
+            #                  args=[message_id],
+            #                  max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
@@ -301,9 +301,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
+            #scheduler.add_job(delete_msg, "date", run_date=run_time,
+            #                  args=[message_id],
+            #                  max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
@@ -311,9 +311,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
+            #scheduler.add_job(delete_msg, "date", run_date=run_time,
+            #                  args=[message_id],
+            #                  max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
