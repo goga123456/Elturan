@@ -226,6 +226,11 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         dates = await baza.select_incident(data['choose'])
+
+        if dates is None:
+            await bot.send_message(chat_id=callback_query.message.chat.id, text="Инцидент не найден.")
+            # Optionally, add more logic here for handling this case
+            return
         await bot.send_message(CHANNEL_ID, f"Инцидент закрыт\n"
                                            f"Номер инцидента: {dates[1]}\n"
                                            f"Приоритет: {dates[4]}\n"
