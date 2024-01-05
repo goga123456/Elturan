@@ -172,6 +172,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                text=f"Инцидент с номером {data['choose']} открыт заново",
                                reply_markup=create_incident_kb())
 
+        if dates[1] in scheduled_tasks:
+            scheduled_tasks[dates[1]].remove()
+            del scheduled_tasks[dates[1]]
+
         run_time = datetime.now() + timedelta(seconds=5)
         run_time1 = datetime.now() + timedelta(seconds=10)
         run_time2 = datetime.now() + timedelta(seconds=20)
@@ -240,6 +244,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if date[1] in scheduled_tasks:
             scheduled_tasks[date[1]].remove()
             del scheduled_tasks[date[1]]
+          
         await ProfileStatesGroup.main_menu.set()
 
 
