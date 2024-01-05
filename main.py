@@ -187,7 +187,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            scheduled_tasks[data['number']] = job
+            scheduled_tasks[dates[1]] = job
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
@@ -197,7 +197,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            scheduled_tasks[data['number']] = job
+            scheduled_tasks[dates[1]] = job
         if dates[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
@@ -207,17 +207,17 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            scheduled_tasks[data['number']] = job
+            scheduled_tasks[dates[1]] = job
         if dates[4] == 4:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            scheduled_tasks[data['number']] = job
+            scheduled_tasks[dates[1]] = job
         if dates[4] == 5:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            scheduled_tasks[data['number']] = job
+            scheduled_tasks[dates[1]] = job
 
     await ProfileStatesGroup.main_menu.set()
 
