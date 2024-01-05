@@ -159,22 +159,18 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
-        dates = await baza.select_closed_incident(data['choose'])
+        date = await baza.select_closed_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"Инцидент открыт заново\n"
-                                           f"Номер инцидента: {dates[1]}\n"
-                                           f"Приоритет: {dates[4]}\n"
-                                           f"Категория: {dates[2]}\n"
-                                           f"Описание: {dates[3]}\n")
-        await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт')
+                                           f"Номер инцидента: {date[1]}\n"
+                                           f"Приоритет: {date[4]}\n"
+                                           f"Категория: {date[2]}\n"
+                                           f"Описание: {date[3]}\n")
+        await baza.insert(date[1], date[2], date[3], date[4], 'Открыт')
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} открыт заново",
                                reply_markup=create_incident_kb())
-
-        if dates[1] in scheduled_tasks:
-            scheduled_tasks[dates[1]].remove()
-            del scheduled_tasks[dates[1]]
 
         run_time = datetime.now() + timedelta(seconds=5)
         run_time1 = datetime.now() + timedelta(seconds=10)
@@ -182,44 +178,44 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         run_time3 = datetime.now() + timedelta(seconds=30)
         run_time4 = datetime.now() + timedelta(seconds=40)
         run_time5 = datetime.now() + timedelta(seconds=50)
-        if dates[4] == 1:
+        if date[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if dates[4] == 2:
+        if date[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if dates[4] == 3:
+        if date[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
             scheduler.add_job(delete_msg, "date", run_date=run_time,
                               args=[message_id],
                               max_instances=1)
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if dates[4] == 4:
+        if date[4] == 4:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
-        if dates[4] == 5:
+        if date[4] == 5:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[data['number']] = job
 
