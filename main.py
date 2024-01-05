@@ -226,7 +226,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         dates = await baza.select_incident(data['choose'])
-      
+
         await bot.send_message(CHANNEL_ID, f"Инцидент закрыт\n"
                                            f"Номер инцидента: {dates[1]}\n"
                                            f"Приоритет: {dates[4]}\n"
@@ -238,9 +238,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        if dates[1] in scheduled_tasks:
-            scheduled_tasks[dates[1]].remove()
-            del scheduled_tasks[dates[1]]
+        #if dates[1] in scheduled_tasks:
+        #    scheduled_tasks[dates[1]].remove()
+        #    del scheduled_tasks[dates[1]]
           
         await ProfileStatesGroup.main_menu.set()
 
