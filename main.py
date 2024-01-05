@@ -169,7 +169,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=f"Инцидент с номером {data['choose']} открыт заново",
+                               text=f"Инцидент с номером {data['choose']} открыт повторно",
                                reply_markup=create_incident_kb())
 
         run_time = datetime.now() + timedelta(seconds=5)
@@ -225,21 +225,21 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
-        date = await baza.select_incident(data['choose'])
+        dates = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"Инцидент закрыт\n"
-                                           f"Номер инцидента: {date[1]}\n"
-                                           f"Приоритет: {date[4]}\n"
-                                           f"Категория: {date[2]}\n"
-                                           f"Описание: {date[3]}\n")
-        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')
+                                           f"Номер инцидента: {dates[1]}\n"
+                                           f"Приоритет: {dates[4]}\n"
+                                           f"Категория: {dates[2]}\n"
+                                           f"Описание: {dates[3]}\n")
+        await baza.insert_deleted(dates[1], dates[2], dates[3], dates[4], 'Закрыт')
         await baza.delete_incident(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        if date[1] in scheduled_tasks:
-            scheduled_tasks[date[1]].remove()
-            del scheduled_tasks[date[1]]
+        if dates[1] in scheduled_tasks:
+            scheduled_tasks[dates[1]].remove()
+            del scheduled_tasks[dates[1]]
           
         await ProfileStatesGroup.main_menu.set()
 
