@@ -227,7 +227,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         data['choose'] = callback_query.data
         dates = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"Инцидент закрыт\n"
-                                           f"Номер инцидента: {dates[1]}\n"
+                                           f"Номер инцидента: {data['choose']}\n"
                                            f"Приоритет: {dates[4]}\n"
                                            f"Категория: {dates[2]}\n"
                                            f"Описание: {dates[3]}\n")
