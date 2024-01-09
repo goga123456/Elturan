@@ -37,7 +37,7 @@ openpyxl==3.1.2
 pandas==2.1.1
 protobuf==4.25.1
 psycopg2==2.9.9
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.1
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 pyparsing==3.1.1
@@ -49,7 +49,7 @@ schedule==1.2.0
 scheduler==0.8.4
 six==1.16.0
 soupsieve==2.5
-SQLAlchemy==2.0.25
+sqlalchemy[postgresql]==1.4.30
 sqlparse==0.4.4
 typeguard==4.1.5
 typing_extensions==4.8.0
