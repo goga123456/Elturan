@@ -17,6 +17,7 @@ import logging
 from db import Database
 from apscheduler.jobstores.base import JobLookupError
 import joblib
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
@@ -37,10 +38,10 @@ WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 
-scheduler = AsyncIOScheduler()
-
-joblib_store_path = 'joblib_store.jbl'
-scheduler.add_jobstore('joblib', alias='my_joblib', filename=joblib_store_path)
+jobstores = {
+    'default': SQLAlchemyJobStore(url=os.environ['DATABASE_URL'])  # Используйте переменную окружения, предоставляемую Heroku
+}
+scheduler = AsyncIOScheduler(jobstores=jobstores)
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
@@ -186,39 +187,35 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id', args=[message_id],
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, args=[message_id],
                               max_instances=1)
-            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, jobstore='my_joblib', id='my_job_id', args=[dates[1], dates[4], dates[2], dates[3]],
+            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
             scheduled_tasks[dates[1]] = job
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, jobstore='my_joblib',
-                                    id='my_job_id', args=[dates[1], dates[4], dates[2], dates[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, args=[dates[1], dates[4], dates[2], dates[3]],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if dates[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, jobstore='my_joblib',
-                                    id='my_job_id', args=[dates[1], dates[4], dates[2], dates[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, args=[dates[1], dates[4], dates[2], dates[3]],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if dates[4] == 4:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time4, jobstore='my_joblib',
-                                    id='my_job_id', args=[dates[1], dates[4], dates[2], dates[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', args=[dates[1], dates[4], dates[2], dates[3]],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if dates[4] == 5:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time5, jobstore='my_joblib',
-                                    id='my_job_id', args=[dates[1], dates[4], dates[2], dates[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', args=[dates[1], dates[4], dates[2], dates[3]],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
 
@@ -309,39 +306,35 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if date[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id', args=[message_id],
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, args=[message_id],
                               max_instances=1)
-            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, jobstore='my_joblib', id='my_job_id', args=[date[1], date[4], date[2], date[3]],
+            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
             scheduled_tasks[date[1]] = job
         if date[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, jobstore='my_joblib',
-                                    id='my_job_id', args=[date[1], date[4], date[2], date[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, args=[date[1], date[4], date[2], date[3]],
                                     max_instances=1)
             scheduled_tasks[date[1]] = job
         if date[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, jobstore='my_joblib',
-                                    id='my_job_id', args=[date[1], date[4], date[2], date[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, args=[date[1], date[4], date[2], date[3]],
                                     max_instances=1)
             scheduled_tasks[date[1]] = job
-        if dates[4] == 4:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time4, jobstore='my_joblib',
-                                    id='my_job_id', args=[date[1], date[4], date[2], date[3]],
+        if date[4] == 4:
+            job = scheduler.add_job(prosrochen, trigger='date', args=[date[1], date[4], date[2], date[3]],
                                     max_instances=1)
             scheduled_tasks[date[1]] = job
         if date[4] == 5:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time5, jobstore='my_joblib',
-                                    id='my_job_id', args=[date[1], date[4], date[2], date[3]],
+            job = scheduler.add_job(prosrochen, trigger='date', args=[date[1], date[4], date[2], date[3]],
                                     max_instances=1)
             scheduled_tasks[date[1]] = job
         
@@ -377,39 +370,35 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if data['priority'] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id', args=[message_id],
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, args=[message_id],
                               max_instances=1)
-            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, jobstore='my_joblib', id='my_job_id', args=[data['number'], data['priority'], data['category'], data['desc']],
+            job=scheduler.add_job(prosrochen, trigger='date', run_date=run_time1, args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
             scheduled_tasks[dates[1]] = job
         if data['priority'] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, jobstore='my_joblib',
-                                    id='my_job_id', args=[data['number'], data['priority'], data['category'], data['desc']],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time2, args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if data['priority'] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, trigger='date', run_date=run_time, jobstore='my_joblib', id='my_job_id',
+            scheduler.add_job(delete_msg, trigger='date', run_date=run_time,
                               args=[message_id],
                               max_instances=1)
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, jobstore='my_joblib',
-                                    id='my_job_id', args=[data['number'], data['priority'], data['category'], data['desc']],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time3, args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if data['priority'] == 4:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time4, jobstore='my_joblib',
-                                    id='my_job_id', args=[data['number'], data['priority'], data['category'], data['desc']],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time4, args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
         if data['priority'] == 5:
-            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time5, jobstore='my_joblib',
-                                    id='my_job_id', args=[data['number'], data['priority'], data['category'], data['desc']],
+            job = scheduler.add_job(prosrochen, trigger='date', run_date=run_time5, args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             scheduled_tasks[dates[1]] = job
 
