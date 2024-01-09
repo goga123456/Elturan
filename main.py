@@ -15,10 +15,8 @@ import asyncpg
 from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from apscheduler.jobstores.memory import MemoryJobStore
-import dj_database_url
-from sqlalchemy import create_engine
+from apscheduler.jobstores.base import JobLookupError
+import joblib
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
