@@ -15,7 +15,7 @@ import asyncpg
 from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore, SQLAlchemyDialect
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import dj_database_url
 CHANNEL_ID = -1002018175768
 
