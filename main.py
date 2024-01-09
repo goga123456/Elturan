@@ -368,7 +368,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"Категория: {data['category']}\n"
                                                f"Описание: {data['desc']}\n")
             run_time = datetime.now() + timedelta(hours=12)
-            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time1 = datetime.now() + timedelta(seconds=10)
             run_time2 = datetime.now() + timedelta(hours=12)
             run_time3 = datetime.now() + timedelta(hours=24)
             run_time4 = datetime.now() + timedelta(hours=72)
