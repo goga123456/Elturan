@@ -17,6 +17,7 @@ import logging
 from db import Database
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import dj_database_url
+from sqlalchemy import create_engine
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
@@ -41,9 +42,12 @@ baza = Database()
 db_url = os.environ.get('DATABASE_URL')
 db_config = dj_database_url.parse(db_url)
 
+# Создайте движок SQLAlchemy явно с указанием диалекта PostgreSQL
+engine = create_engine(db_url, connect_args={"sslmode": "require"})
+
 # Инициализация SQLAlchemyJobStore с использованием Heroku Postgres
 jobstores = {
-    'default': SQLAlchemyJobStore(url=db_url, engine_options={"connect_args": {"sslmode": "require"}})
+    'default': SQLAlchemyJobStore(engine=engine)
 }
 
 # Создание планировщика с использованием SQLAlchemyJobStore
