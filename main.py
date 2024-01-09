@@ -46,6 +46,7 @@ jobstores = {
     'default': SQLAlchemyJobStore(url=db_url, engine_options={"connect_args": {"sslmode": "require"}})
 }
 
+# Создание планировщика с использованием SQLAlchemyJobStore
 scheduler = AsyncIOScheduler(jobstores=jobstores)
 
 async def delete_msg(message_id):
