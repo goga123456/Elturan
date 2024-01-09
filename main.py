@@ -42,7 +42,7 @@ baza = Database()
 db_url = os.environ.get('DATABASE_URL')
 db_config = dj_database_url.parse(db_url)
 
-# Создайте движок SQLAlchemy явно с указанием диалекта PostgreSQL
+# Создайте движок SQLAlchemy явно с использованием асинхронного драйвера asyncpg
 engine = create_engine(db_url, connect_args={"sslmode": "require"})
 
 # Инициализация SQLAlchemyJobStore с использованием Heroku Postgres
