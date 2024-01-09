@@ -40,8 +40,9 @@ baza = Database()
 db_url = os.environ.get('DATABASE_URL')
 db_config = dj_database_url.parse(db_url)
 
+# Инициализация SQLAlchemyJobStore с использованием Heroku Postgres
 jobstores = {
-    'default': SQLAlchemyJobStore(url=db_url)
+    'default': SQLAlchemyJobStore(url=db_config['url'], engine_options={"connect_args": {"sslmode": "require"}})
 }
 
 scheduler = AsyncIOScheduler(jobstores=jobstores)
