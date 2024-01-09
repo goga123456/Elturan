@@ -38,11 +38,8 @@ WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 
-jobstores = {
-    'default': SQLAlchemyJobStore(url=os.environ['DATABASE_URL'], engine_options={'connect_args': {'sslmode': 'require'}}),
-}
+scheduler = AsyncIOScheduler()
 
-scheduler = AsyncIOScheduler(jobstores=jobstores)
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
