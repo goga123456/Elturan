@@ -43,7 +43,7 @@ db_url = os.environ.get('DATABASE_URL')
 db_config = dj_database_url.parse(db_url)
 
 # Создайте движок SQLAlchemy явно с указанием диалекта PostgreSQL
-engine = create_engine(db_url, connect_args={"sslmode": "require"}, client_encoding="utf8")
+engine = create_engine(db_url, connect_args={"sslmode": "require"})
 
 # Инициализация SQLAlchemyJobStore с использованием Heroku Postgres
 jobstores = {
