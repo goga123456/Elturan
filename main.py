@@ -15,6 +15,8 @@ import asyncpg
 from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+import dj_database_url
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
@@ -34,8 +36,15 @@ WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
-scheduler = AsyncIOScheduler()
 
+db_url = os.environ.get('DATABASE_URL')
+db_config = dj_database_url.config(default=db_url)
+
+jobstores = {
+    'default': SQLAlchemyJobStore(url=db_config['URL'])
+}
+
+scheduler = AsyncIOScheduler(jobstores=jobstores)
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
