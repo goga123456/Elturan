@@ -38,10 +38,10 @@ WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 
 db_url = os.environ.get('DATABASE_URL')
-db_config = dj_database_url.config(default=db_url)
+db_config = dj_database_url.parse(db_url)
 
 jobstores = {
-    'default': SQLAlchemyJobStore(url=db_config['url'])
+    'default': SQLAlchemyJobStore(url=db_url)
 }
 
 scheduler = AsyncIOScheduler(jobstores=jobstores)
