@@ -16,6 +16,7 @@ from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apscheduler.jobstores.memory import MemoryJobStore
 import dj_database_url
 from sqlalchemy import create_engine
 CHANNEL_ID = -1002018175768
@@ -38,20 +39,7 @@ WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 
-# Используйте библиотеку dj_database_url для автоматического извлечения параметров подключения из DATABASE_URL
-db_url = os.environ.get('DATABASE_URL')
-db_config = dj_database_url.parse(db_url)
-
-# Создайте движок SQLAlchemy явно с использованием асинхронного драйвера asyncpg
-engine = create_engine(db_url, connect_args={"sslmode": "require"})
-
-# Инициализация SQLAlchemyJobStore с использованием Heroku Postgres
-jobstores = {
-    'default': SQLAlchemyJobStore(engine=engine)
-}
-
-# Создание планировщика с использованием SQLAlchemyJobStore
-scheduler = AsyncIOScheduler(jobstores=jobstores)
+scheduler = AsyncIOScheduler(jobstores={'default': MemoryJobStore()})
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
