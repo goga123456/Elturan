@@ -39,7 +39,10 @@ WEBAPP_HOST = '0.0.0.0'
 WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 
-scheduler = AsyncIOScheduler(jobstores={'default': MemoryJobStore()})
+scheduler = AsyncIOScheduler()
+
+joblib_store_path = 'joblib_store.jbl'
+scheduler.add_jobstore('joblib', alias='my_joblib', filename=joblib_store_path)
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
