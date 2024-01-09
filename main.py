@@ -41,7 +41,7 @@ db_url = os.environ.get('DATABASE_URL')
 db_config = dj_database_url.config(default=db_url)
 
 jobstores = {
-    'default': SQLAlchemyJobStore(url=db_config['URL'])
+    'default': SQLAlchemyJobStore(url=db_config['url'])
 }
 
 scheduler = AsyncIOScheduler(jobstores=jobstores)
