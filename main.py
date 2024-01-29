@@ -53,11 +53,15 @@ conn.commit()
 
 def save_task_to_db(task_type, run_date, args):
     try:
+        # Convert args to a JSON-formatted string
+        args_json = json.dumps(args)
+        
         with conn, conn.cursor() as cursor:
             cursor.execute("INSERT INTO scheduled_tasks (task_type, run_date, args) VALUES (%s, %s, %s) RETURNING id",
-                           (task_type, run_date, args))
+                           (task_type, run_date, args_json))
             task_id = cursor.fetchone()[0]
             conn.commit()  # Commit the transaction
+        
         return task_id
     except psycopg2.Error as e:
         print("Error saving task to database:", e)
