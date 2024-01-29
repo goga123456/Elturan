@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 
+import psycopg2
 from aiogram import types, executor, Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
@@ -36,6 +37,44 @@ WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 scheduler = AsyncIOScheduler()
 
+# Подключение к базе данных PostgreSQL
+DATABASE_URL = 'postgres://wowtxxyzscoxds:2e8b1c03511e3a6a749f69d7c49e6ee7192e1d5d423df9610875a9ad81af450d@ec2-54-73-22-169.eu-west-1.compute.amazonaws.com:5432/d98s1127nsjs99'
+conn = psycopg2.connect(DATABASE_URL)
+cursor = conn.cursor()
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS scheduled_tasks (
+        id serial PRIMARY KEY,
+        task_type text,
+        run_date timestamp,
+        args json
+    )
+""")
+conn.commit()
+
+async def save_task_to_db(task_type, run_date, args):
+    cursor.execute("INSERT INTO scheduled_tasks (task_type, run_date, args) VALUES (%s, %s, %s) RETURNING id",
+                   (task_type, run_date, args))
+    task_id = cursor.fetchone()[0]
+    conn.commit()
+    return task_id
+
+async def restore_tasks_from_db():
+    cursor.execute("SELECT * FROM scheduled_tasks")
+    tasks = cursor.fetchall()
+    job = None
+
+    for task in tasks:
+        task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
+
+        try:
+            if task_type == 'delete_msg':
+                job = scheduler.add_job(delete_msg, "date", run_date=run_date, args=args, max_instances=1)
+            elif task_type == 'prosrochen':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+
+            scheduled_tasks[task_id] = job
+        except Exception as e:
+            print(f"Error restoring task {task_id}: {e}")
 
 async def delete_msg(message_id):
     await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
@@ -181,43 +220,23 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
-                              max_instances=1)
-            scheduled_tasks[dates[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
+
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
-                              max_instances=1)
-            scheduled_tasks[dates[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
-                              max_instances=1)
-            scheduled_tasks[dates[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 4:
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
-                              max_instances=1)
-            scheduled_tasks[dates[1]] = job
+            task_id2 = await save_task_to_db('prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 5:
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                              args=[dates[1], dates[4], dates[2], dates[3]],
-                              max_instances=1)
-            scheduled_tasks[dates[1]] = job
+            task_id2 = await save_task_to_db('prosrochen', run_time5, [dates[1], dates[4], dates[2], dates[3]])
 
     await ProfileStatesGroup.main_menu.set()
 
@@ -306,43 +325,22 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if date[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
-                              args=[date[1], date[4], date[2], date[3]],
-                              max_instances=1)
-            scheduled_tasks[date[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
         if date[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                              args=[date[1], date[4], date[2], date[3]],
-                              max_instances=1)
-            scheduled_tasks[date[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
         if date[4] == 3:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
-            scheduler.add_job(delete_msg, "date", run_date=run_time,
-                              args=[message_id],
-                              max_instances=1)
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                              args=[date[1], date[4], date[2], date[3]],
-                              max_instances=1)
-            scheduled_tasks[date[1]] = job
+            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = await save_task_to_db('prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
         if date[4] == 4:
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                              args=[date[1], date[4], date[2], date[3]],
-                              max_instances=1)
-            scheduled_tasks[date[1]] = job
+            task_id2 = await save_task_to_db('prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
         if date[4] == 5:
-            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                              args=[date[1], date[4], date[2], date[3]],
-                              max_instances=1)
-            scheduled_tasks[date[1]] = job
+            task_id2 = await save_task_to_db('prosrochen', run_time5, [date[1], date[4], date[2], date[3]])
         
               
         await ProfileStatesGroup.main_menu.set()
@@ -376,43 +374,22 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             if data['priority'] == '1':
                 msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
                 message_id = msg.message_id
-                scheduler.add_job(delete_msg, "date", run_date=run_time,
-                                  args=[message_id],
-                                  max_instances=1)
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
-                                  args=[data['number'], data['priority'], data['category'], data['desc']],
-                                  max_instances=1)
-                scheduled_tasks[data['number']] = job
+                task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+                task_id2 = await save_task_to_db('prosrochen', run_time1, [data[1], data[4], data[2], data[3]])
             if data['priority'] == '2':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
-                scheduler.add_job(delete_msg, "date", run_date=run_time,
-                                  args=[message_id],
-                                  max_instances=1)
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                                  args=[data['number'], data['priority'], data['category'], data['desc']],
-                                  max_instances=1)
-                scheduled_tasks[data['number']] = job
+                task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+                task_id2 = await save_task_to_db('prosrochen', run_time2, [data[1], data[4], data[2], data[3]])
             if data['priority'] == '3':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
-                scheduler.add_job(delete_msg, "date", run_date=run_time,
-                                  args=[message_id],
-                                  max_instances=1)
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                                  args=[data['number'], data['priority'], data['category'], data['desc']],
-                                  max_instances=1)
-                scheduled_tasks[data['number']] = job
+                task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
+                task_id2 = await save_task_to_db('prosrochen', run_time3, [data[1], data[4], data[2], data[3]])
             if data['priority'] == '4':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                                  args=[data['number'], data['priority'], data['category'], data['desc']],
-                                  max_instances=1)
-                scheduled_tasks[data['number']] = job
+                task_id2 = await save_task_to_db('prosrochen', run_time4, [data[1], data[4], data[2], data[3]])
             if data['priority'] == '5':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                                  args=[data['number'], data['priority'], data['category'], data['desc']],
-                                  max_instances=1)
-                scheduled_tasks[data['number']] = job
+                task_id2 = await save_task_to_db('prosrochen', run_time5, [data[1], data[4], data[2], data[3]])
 
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
@@ -450,6 +427,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True, max_connections=100)
+    await restore_tasks_from_db()
     scheduler.start()
 
 async def on_shutdown(dispatcher):
