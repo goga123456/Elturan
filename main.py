@@ -38,8 +38,8 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 # Подключение к базе данных PostgreSQL
-DATABASE_URL = 'postgres://wowtxxyzscoxds:2e8b1c03511e3a6a749f69d7c49e6ee7192e1d5d423df9610875a9ad81af450d@ec2-54-73-22-169.eu-west-1.compute.amazonaws.com:5432/d98s1127nsjs99'
-conn = psycopg2.connect(DATABASE_URL)
+DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
 cursor = conn.cursor()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS scheduled_tasks (
