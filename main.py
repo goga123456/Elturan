@@ -51,12 +51,18 @@ cursor.execute("""
 """)
 conn.commit()
 
-async def save_task_to_db(task_type, run_date, args):
-    cursor.execute("INSERT INTO scheduled_tasks (task_type, run_date, args) VALUES (%s, %s, %s) RETURNING id",
-                   (task_type, run_date, args))
-    task_id = cursor.fetchone()[0]
-    conn.commit()
-    return task_id
+def save_task_to_db(task_type, run_date, args):
+    try:
+        with conn, conn.cursor() as cursor:
+            cursor.execute("INSERT INTO scheduled_tasks (task_type, run_date, args) VALUES (%s, %s, %s) RETURNING id",
+                           (task_type, run_date, args))
+            task_id = cursor.fetchone()[0]
+            conn.commit()  # Commit the transaction
+        return task_id
+    except psycopg2.Error as e:
+        print("Error saving task to database:", e)
+        conn.rollback()  # Rollback the transaction in case of an error
+        raise  # Re-raise the exception for further handling
 
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
