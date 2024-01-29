@@ -230,8 +230,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
-            task_id2 = await save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
+            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
 
         if dates[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
@@ -335,8 +335,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if date[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
-            task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
-            task_id2 = await save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
+            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
+            task_id2 = save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
         if date[4] == 2:
             msg = await bot.send_message(CHANNEL_ID, "@Elturan")
             message_id = msg.message_id
@@ -384,8 +384,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             if data['priority'] == '1':
                 msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
                 message_id = msg.message_id
-                task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
-                task_id2 = await save_task_to_db('prosrochen', run_time1, [data[1], data[4], data[2], data[3]])
+                task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
+                task_id2 = save_task_to_db('prosrochen', run_time1, [data[1], data[4], data[2], data[3]])
             if data['priority'] == '2':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
