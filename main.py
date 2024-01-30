@@ -70,11 +70,11 @@ def save_task_to_db(task_type, run_date, args):
 def delete_task(task_id):
     try:
         # Удаление задачи из словаря
-        scheduled_task = scheduled_tasks.pop(task_id, None)
-        if scheduled_task:
-            scheduled_task.remove()  # Предполагается, что scheduled_task - это объект задачи (job), который имеет метод remove
-        else:
-            print(f"Task with ID {task_id} not found in scheduled_tasks.")
+        #scheduled_task = scheduled_tasks.pop(task_id, None)
+        #if scheduled_task:
+        #    scheduled_task.remove()  # Предполагается, что scheduled_task - это объект задачи (job), который имеет метод remove
+        #else:
+        #    print(f"Task with ID {task_id} not found in scheduled_tasks.")
 
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
