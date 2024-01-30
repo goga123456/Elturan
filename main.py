@@ -76,9 +76,17 @@ def delete_task(task_id):
         #else:
         #    print(f"Task with ID {task_id} not found in scheduled_tasks.")
 
+        with conn, conn.cursor() as cursor:
+            cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>1 = %s", (task_id,))
+            result = cursor.fetchall()   
+            conn.commit()
+            scheduled_task = scheduled_tasks.pop(task_id, None)
+            if scheduled_task:
+                scheduled_task.remove()
+
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
-            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
+            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>1 = %s", (task_id,))
             conn.commit()  # Commit the transaction
 
     except psycopg2.Error as e:
