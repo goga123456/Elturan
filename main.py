@@ -247,7 +247,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             task_id2 = await save_task_to_db('prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 5:
             task_id2 = await save_task_to_db('prosrochen', run_time5, [dates[1], dates[4], dates[2], dates[3]])
-
+    await restore_tasks_from_db()
     await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
@@ -350,9 +350,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         if date[4] == 4:
             task_id2 = await save_task_to_db('prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
         if date[4] == 5:
-            task_id2 = await save_task_to_db('prosrochen', run_time5, [date[1], date[4], date[2], date[3]])
-        
-              
+            task_id2 = await save_task_to_db('prosrochen', run_time5, [date[1], date[4], date[2], date[3]])        
+        await restore_tasks_from_db()      
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
