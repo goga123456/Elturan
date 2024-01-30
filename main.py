@@ -68,17 +68,6 @@ def save_task_to_db(task_type, run_date, args):
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
 
-def remove_task_from_scheduler(task_id):
-    try:
-        job = scheduled_tasks.get(task_id)
-        if job:
-            job.remove()
-            del scheduled_tasks[task_id]
-        else:
-            print(f"Task with ID {task_id} not found.")
-    except Exception as e:
-        print(f"Error removing task {task_id}: {e}")
-
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
     tasks = cursor.fetchall()
