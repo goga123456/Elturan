@@ -291,7 +291,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        delete_task(date[1])
+        delete_task(str(date[1]))
         await ProfileStatesGroup.main_menu.set()
 
 
@@ -345,7 +345,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
-        delete_task(date[1])
+        delete_task(str(date[1]))
 
         run_time = datetime.now() + timedelta(seconds=5)
         run_time1 = datetime.now() + timedelta(seconds=10)
