@@ -390,16 +390,16 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
                 task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
-                task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+                task_id2 = save_task_to_db('prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '3':
                 msg = await bot.send_message(CHANNEL_ID, "@Elturan")
                 message_id = msg.message_id
                 task_id1 = await save_task_to_db('delete_msg', run_time, [message_id])
-                task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+                task_id2 = save_task_to_db('prosrochen', run_time3, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '4':
-                task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+                task_id2 = save_task_to_db('prosrochen', run_time4, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '5':
-                task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+                task_id2 = save_task_to_db('prosrochen', run_time5, [data['number'], data['priority'], data['category'], data['desc']])
              
         await restore_tasks_from_db()
         await callback_query.message.delete()
