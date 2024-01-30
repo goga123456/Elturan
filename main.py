@@ -68,6 +68,17 @@ def save_task_to_db(task_type, run_date, args):
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
 
+def remove_task_from_scheduler(task_id):
+    try:
+        job = scheduled_tasks.get(task_id)
+        if job:
+            job.remove()
+            del scheduled_tasks[task_id]
+        else:
+            print(f"Task with ID {task_id} not found.")
+    except Exception as e:
+        print(f"Error removing task {task_id}: {e}")
+
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
     tasks = cursor.fetchall()
@@ -322,9 +333,20 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
-        if date[1] in scheduled_tasks:
-            scheduled_tasks[date[1]].remove()
-            del scheduled_tasks[date[1]]      
+        task_id_to_remove = date[1]
+        if task_id_to_remove in scheduled_tasks:
+            job_to_remove = scheduled_tasks[task_id_to_remove]
+
+            try:
+                job_to_remove.remove()
+                del scheduled_tasks[task_id_to_remove]
+                print(f"Task with ID {task_id_to_remove} removed successfully.")
+            except Exception as e:
+                print(f"Error removing task with ID {task_id_to_remove}: {e}")
+        else:
+            print(f"Task with ID {task_id_to_remove} not found.")      
+
+     
 
         run_time = datetime.now() + timedelta(hours=12)
         run_time1 = datetime.now() + timedelta(hours=4)
