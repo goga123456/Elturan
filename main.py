@@ -67,7 +67,24 @@ def save_task_to_db(task_type, run_date, args):
         print("Error saving task to database:", e)
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
+def delete_task(task_id):
+    try:
+        # Удаление задачи из словаря
+        scheduled_task = scheduled_tasks.pop(task_id, None)
+        if scheduled_task:
+            scheduled_task.remove()  # Предполагается, что scheduled_task - это объект задачи (job), который имеет метод remove
+        else:
+            print(f"Task with ID {task_id} not found in scheduled_tasks.")
 
+        # Удаление задачи из базы данных
+        with conn, conn.cursor() as cursor:
+            cursor.execute("DELETE FROM scheduled_tasks WHERE id = %s", (task_id,))
+            conn.commit()  # Commit the transaction
+
+    except psycopg2.Error as e:
+        print(f"Error deleting task {task_id} from database:", e)
+        conn.rollback()  # Rollback the transaction in case of an error
+        raise  # Re-raise the exception for further handling
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
     tasks = cursor.fetchall()
@@ -266,9 +283,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        if date[1] in scheduled_tasks:
-            scheduled_tasks[date[1]].remove()
-            del scheduled_tasks[date[1]]
+        delete_task(date[1])
         await ProfileStatesGroup.main_menu.set()
 
 
@@ -322,20 +337,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
-        task_id_to_remove = date[1]
-        if task_id_to_remove in scheduled_tasks:
-            job_to_remove = scheduled_tasks[task_id_to_remove]
-
-            try:
-                job_to_remove.remove()
-                del scheduled_tasks[task_id_to_remove]
-                print(f"Task with ID {task_id_to_remove} removed successfully.")
-            except Exception as e:
-                print(f"Error removing task with ID {task_id_to_remove}: {e}")
-        else:
-            print(f"Task with ID {task_id_to_remove} not found.")      
-
-     
+        delete_task(date[1])
 
         run_time = datetime.now() + timedelta(seconds=5)
         run_time1 = datetime.now() + timedelta(seconds=10)
