@@ -72,12 +72,11 @@ def delete_task(task_id):
         with conn, conn.cursor() as cursor:
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
-            print(result)
             conn.commit()
             if result:
                 scheduled_task_id = result[0]
                 print(result[0])
-                scheduled_task = scheduled_tasks.pop(result, None)
+                scheduled_task = scheduled_tasks.pop(result[0], None)
                 if scheduled_task:
                     scheduled_task.remove()
         # Удаление задачи из базы данных
