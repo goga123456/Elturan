@@ -243,16 +243,30 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         run_time4 = datetime.now() + timedelta(hours=72)
         run_time5 = datetime.now() + timedelta(hours=168)
         if dates[4] == 1:
-            task_id2 = save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
+            save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if dates[4] == 2:
-            task_id2 = save_task_to_db('prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
+            save_task_to_db('prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if dates[4] == 3:
-            task_id2 = save_task_to_db('prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
+            save_task_to_db('prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if dates[4] == 4:
-            task_id2 = save_task_to_db('prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
+            save_task_to_db('prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if dates[4] == 5:
             task_id2 = save_task_to_db('prosrochen', run_time5, [dates[1], dates[4], dates[2], dates[3]])
-    await restore_tasks_from_db()
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
     await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
@@ -333,16 +347,30 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         run_time4 = datetime.now() + timedelta(hours=72)
         run_time5 = datetime.now() + timedelta(hours=168)
         if date[4] == 1:
-            task_id2 = save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
+            save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if date[4] == 2:
-            task_id2 = save_task_to_db('prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
+            save_task_to_db('prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if date[4] == 3:
-            task_id2 = save_task_to_db('prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
+            save_task_to_db('prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if date[4] == 4:
-            task_id2 = save_task_to_db('prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
+            save_task_to_db('prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         if date[4] == 5:
-            task_id2 = save_task_to_db('prosrochen', run_time5, [date[1], date[4], date[2], date[3]])        
-        await restore_tasks_from_db()      
+            save_task_to_db('prosrochen', run_time5, [date[1], date[4], date[2], date[3]]) 
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)    
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
@@ -373,16 +401,29 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time5 = datetime.now() + timedelta(hours=168)
             if data['priority'] == '1':
                 task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
             if data['priority'] == '2':
                 task_id2 = save_task_to_db('prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
             if data['priority'] == '3':
                 task_id2 = save_task_to_db('prosrochen', run_time3, [data['number'], data['priority'], data['category'], data['desc']])
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
             if data['priority'] == '4':
                 task_id2 = save_task_to_db('prosrochen', run_time4, [data['number'], data['priority'], data['category'], data['desc']])
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
             if data['priority'] == '5':
                 task_id2 = save_task_to_db('prosrochen', run_time5, [data['number'], data['priority'], data['category'], data['desc']])
-             
-        await restore_tasks_from_db()
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[dates[1], dates[4], dates[2], dates[3]],
+                              max_instances=1)
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=callback_query.data, reply_markup=create_incident_kb())      
