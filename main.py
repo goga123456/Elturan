@@ -80,9 +80,9 @@ def delete_task(task_id):
                 if scheduled_task:
                     scheduled_task.remove()
         # Удаление задачи из базы данных
-        #with conn, conn.cursor() as cursor:
-        #    cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-        #    conn.commit()  # Commit the transaction
+        with conn, conn.cursor() as cursor:
+            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
+            conn.commit()  # Commit the transaction
 
     except psycopg2.Error as e:
         print(f"Error deleting task {task_id} from database:", e)
