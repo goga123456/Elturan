@@ -82,7 +82,7 @@ def delete_task(task_id):
         """
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
-            cursor.execute("DELETE FROM scheduled_tasks WHERE args->1 = %s", (task_id,))
+            cursor.execute("DELETE FROM scheduled_tasks WHERE args->0 = %s", (task_id,))
             conn.commit()  # Commit the transaction
 
     except psycopg2.Error as e:
@@ -287,7 +287,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
-        #delete_task(date[1])
+        delete_task(date[1])
         await ProfileStatesGroup.main_menu.set()
        
 
