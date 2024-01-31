@@ -241,12 +241,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                text=f"Инцидент с номером {data['choose']} открыт заново",
                                reply_markup=create_incident_kb())
 
-        run_time = datetime.now() + timedelta(seconds=5)
-        run_time1 = datetime.now() + timedelta(seconds=10)
-        run_time2 = datetime.now() + timedelta(seconds=20)
-        run_time3 = datetime.now() + timedelta(seconds=30)
-        run_time4 = datetime.now() + timedelta(seconds=40)
-        run_time5 = datetime.now() + timedelta(seconds=50)
+        run_time = datetime.now() + timedelta(hours=12)
+        run_time1 = datetime.now() + timedelta(hours=4)
+        run_time2 = datetime.now() + timedelta(hours=12)
+        run_time3 = datetime.now() + timedelta(hours=24)
+        run_time4 = datetime.now() + timedelta(hours=72)
+        run_time5 = datetime.now() + timedelta(hours=168)
         if dates[4] == 1:
             msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
@@ -342,12 +342,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Описание: {date[3]}\n")
 
         delete_task(date[1])
-        run_time = datetime.now() + timedelta(seconds=5)
-        run_time1 = datetime.now() + timedelta(seconds=10)
-        run_time2 = datetime.now() + timedelta(seconds=20)
-        run_time3 = datetime.now() + timedelta(seconds=30)
-        run_time4 = datetime.now() + timedelta(seconds=40)
-        run_time5 = datetime.now() + timedelta(seconds=50)
+        run_time = datetime.now() + timedelta(hours=12)
+        run_time1 = datetime.now() + timedelta(hours=4)
+        run_time2 = datetime.now() + timedelta(hours=12)
+        run_time3 = datetime.now() + timedelta(hours=24)
+        run_time4 = datetime.now() + timedelta(hours=72)
+        run_time5 = datetime.now() + timedelta(hours=168)
         if date[4] == 1:
             msg = bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
             message_id = msg.message_id
@@ -390,12 +390,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"Приоритет: {data['priority']}\n"
                                                f"Категория: {data['category']}\n"
                                                f"Описание: {data['desc']}\n")
-            run_time = datetime.now() + timedelta(seconds=5)
-            run_time1 = datetime.now() + timedelta(seconds=10)
-            run_time2 = datetime.now() + timedelta(seconds=20)
-            run_time3 = datetime.now() + timedelta(seconds=30)
-            run_time4 = datetime.now() + timedelta(seconds=40)
-            run_time5 = datetime.now() + timedelta(seconds=50)
+            run_time = datetime.now() + timedelta(hours=12)
+            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time2 = datetime.now() + timedelta(hours=12)
+            run_time3 = datetime.now() + timedelta(hours=24)
+            run_time4 = datetime.now() + timedelta(hours=72)
+            run_time5 = datetime.now() + timedelta(hours=168)
             if data['priority'] == '1':
                 msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
                 message_id = msg.message_id
