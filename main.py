@@ -106,10 +106,6 @@ async def restore_tasks_from_db():
         except Exception as e:
             print(f"Error restoring task {task_id}: {e}")
 
-async def delete_msg(message_id):
-    await bot.delete_message(chat_id=CHANNEL_ID, message_id=message_id)
-
-
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
     await bot.send_message(CHANNEL_ID, f"Просрочен SLA\n"
@@ -117,6 +113,7 @@ async def prosrochen(number, priority, category, desc):
                                        f"Приоритет: {priority}\n"
                                        f"Категория: {category}\n"
                                        f"Описание: {desc}\n")
+    delete_task(number)
 
 async def incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
@@ -240,28 +237,16 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} открыт заново",
                                reply_markup=create_incident_kb())
-
-        run_time = datetime.now() + timedelta(hours=12)
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
         run_time4 = datetime.now() + timedelta(hours=72)
         run_time5 = datetime.now() + timedelta(hours=168)
         if dates[4] == 1:
-            msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
-
         if dates[4] == 2:
-            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 3:
-            msg = bot.send_message(CHANNEL_ID, "@Elturan")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 4:
             task_id2 = save_task_to_db('prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
@@ -342,26 +327,16 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Описание: {date[3]}\n")
 
         delete_task(date[1])
-        run_time = datetime.now() + timedelta(hours=12)
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
         run_time4 = datetime.now() + timedelta(hours=72)
         run_time5 = datetime.now() + timedelta(hours=168)
         if date[4] == 1:
-            msg = bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
         if date[4] == 2:
-            msg = bot.send_message(CHANNEL_ID, "@Elturan")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
         if date[4] == 3:
-            msg = await bot.send_message(CHANNEL_ID, "@Elturan")
-            message_id = msg.message_id
-            task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
             task_id2 = save_task_to_db('prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
         if date[4] == 4:
             task_id2 = save_task_to_db('prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
@@ -397,19 +372,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time4 = datetime.now() + timedelta(hours=72)
             run_time5 = datetime.now() + timedelta(hours=168)
             if data['priority'] == '1':
-                msg = await bot.send_message(CHANNEL_ID, "@IsmoilovOybek")
-                message_id = msg.message_id
-                task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
                 task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '2':
-                msg = await bot.send_message(CHANNEL_ID, "@Elturan")
-                message_id = msg.message_id
-                task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
                 task_id2 = save_task_to_db('prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '3':
-                msg = await bot.send_message(CHANNEL_ID, "@Elturan")
-                message_id = msg.message_id
-                task_id1 = save_task_to_db('delete_msg', run_time, [message_id])
                 task_id2 = save_task_to_db('prosrochen', run_time3, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '4':
                 task_id2 = save_task_to_db('prosrochen', run_time4, [data['number'], data['priority'], data['category'], data['desc']])
