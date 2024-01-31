@@ -69,20 +69,14 @@ def save_task_to_db(task_type, run_date, args):
         raise  # Re-raise the exception for further handling
 def delete_task(task_id):
     try:
-        # Удаление задачи из словаря
-        #scheduled_task = scheduled_tasks.pop(task_id, None)
-        #if scheduled_task:
-        #    scheduled_task.remove()  # Предполагается, что scheduled_task - это объект задачи (job), который имеет метод remove
-        #else:
-        #    print(f"Task with ID {task_id} not found in scheduled_tasks.")
-
         with conn, conn.cursor() as cursor:
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>1 = %s", (task_id,))
-            result = cursor.fetchall()   
-            conn.commit()
-            scheduled_task = scheduled_tasks.pop(str(result), None)
-            if scheduled_task:
-                scheduled_task.remove()
+            result = cursor.fetchone()
+            if result:
+                scheduled_task_id = result[0]
+                scheduled_task = scheduled_tasks.pop(result, None)
+                if scheduled_task:
+                    scheduled_task.remove()
 
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
