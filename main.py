@@ -82,7 +82,7 @@ def delete_task(task_id):
         """
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
-            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>1 = %s", (task_id,))
+            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>1 = %s", (str(task_id,)))
             conn.commit()  # Commit the transaction
 
     except psycopg2.Error as e:
