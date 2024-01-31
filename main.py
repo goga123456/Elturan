@@ -74,7 +74,7 @@ def delete_task(task_id):
             result = cursor.fetchone()
             conn.commit()
             if result:
-                scheduled_task_id = result[0]
+                scheduled_task_id = str(result[0])
                 scheduled_task = scheduled_tasks.pop(result, None)
                 if scheduled_task:
                     scheduled_task.remove()
