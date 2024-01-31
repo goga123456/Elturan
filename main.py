@@ -80,7 +80,7 @@ def delete_task(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>1 = %s", (task_id,))
             result = cursor.fetchall()   
             conn.commit()
-            scheduled_task = scheduled_tasks.pop(result, None)
+            scheduled_task = scheduled_tasks.pop(str(result), None)
             if scheduled_task:
                 scheduled_task.remove()
 
