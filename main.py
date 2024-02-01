@@ -319,6 +319,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"Категория: {date[2]}\n"
                                                f"Описание: {date[3]}\n")
             await ProfileStatesGroup.main_menu.set()
+            delete_task(date[1])
+            
     if callback_query.data == "back":
         await bot.send_message(chat_id=callback_query.from_user.id, text="🔙", reply_markup=create_incident_kb())
         await callback_query.message.delete()
