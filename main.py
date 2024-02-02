@@ -73,23 +73,24 @@ def delete_task(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
             conn.commit()
-        if result is not None:
-            job_id = result[0] 
-            if job_id in scheduled_tasks:
-                scheduled_tasks[job_id].remove()
-                del scheduled_tasks[job_id]        
-        else:
-            print(f"No scheduled task found with task ID {task_id}")    
-            
+            if result:
+                job_id = result[0]   
+        if job_id:
+            try:
+                scheduler.remove_job(job_id)
+                print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
+            except JobLookupError as e:
+                print(f"Job {job_id} not found in APScheduler. It might have been already removed. Error: {e}")    
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
             cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             conn.commit()  # Commit the transaction
 
     except psycopg2.Error as e:
-        print(f"Error deleting task {task_id} from database:", e)
-        conn.rollback()  # Rollback the transaction in case of an error
-        raise  # Re-raise the exception for further handling
+        print(f"Error deleting task {task_id} from schedule:", e)
+        conn.rollback()
+        raise
+      
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
     tasks = cursor.fetchall()
