@@ -395,12 +395,16 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"Приоритет: {data['priority']}\n"
                                                f"Категория: {data['category']}\n"
                                                f"Описание: {data['desc']}\n")
-            run_time = datetime.now() + timedelta(hours=12)
-            run_time1 = datetime.now() + timedelta(hours=4)
-            run_time2 = datetime.now() + timedelta(hours=12)
-            run_time3 = datetime.now() + timedelta(hours=24)
-            run_time4 = datetime.now() + timedelta(hours=72)
-            run_time5 = datetime.now() + timedelta(hours=168)
+            #run_time1 = datetime.now() + timedelta(hours=4)
+            #run_time2 = datetime.now() + timedelta(hours=12)
+            #run_time3 = datetime.now() + timedelta(hours=24)
+            #run_time4 = datetime.now() + timedelta(hours=72)
+            #run_time5 = datetime.now() + timedelta(hours=168)
+            run_time1 = datetime.now() + timedelta(seconds=10)
+            run_time2 = datetime.now() + timedelta(seconds=20)
+            run_time3 = datetime.now() + timedelta(seconds=30)
+            run_time4 = datetime.now() + timedelta(seconds=40)
+            run_time5 = datetime.now() + timedelta(seconds=50)
             if data['priority'] == '1':
                 task_id2 = save_task_to_db('prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
