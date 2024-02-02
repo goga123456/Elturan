@@ -75,7 +75,8 @@ def delete_task(task_id):
             result = cursor.fetchone()
             conn.commit()
             if result:
-                job_id = result[0]   
+                job_id = result[0] 
+                print(job_id)
                 try:
                     scheduler.remove_job(job_id)
                     print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
