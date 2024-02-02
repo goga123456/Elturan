@@ -19,7 +19,7 @@ from db import Database
 from apscheduler.jobstores.base import JobLookupError
 CHANNEL_ID = -1002018175768
 
-scheduled_tasks = {}
+#scheduled_tasks = {}
 
 storage = MemoryStorage()
 TOKEN = os.getenv('BOT_TOKEN')
@@ -68,6 +68,11 @@ def save_task_to_db(task_type, run_date, args):
         print("Error saving task to database:", e)
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
+async def print_all_jobs():
+    jobs = scheduler.get_jobs()
+    print("Запланированные задачи:")
+    for job in jobs:
+        print(f"ID задачи: {job.id}, Имя: {job.name}, Следующий запуск: {job.next_run_time}, Триггер: {job.trigger}")      
 def delete_task(task_id):
     try:
         with conn, conn.cursor() as cursor:
@@ -77,6 +82,7 @@ def delete_task(task_id):
             if result:
                 job_id = int(result[0]) 
                 print(job_id)
+                print_all_jobs()
                 try:
                     scheduler.remove_job(job_id)
                     print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
