@@ -77,6 +77,7 @@ def delete_task(task_id):
                 scheduled_task_id = result[0]
                 print(result[0])
                 scheduled_task = scheduled_tasks.pop(result[0], None)
+                print(scheduled_task)
                 if scheduled_task:
                     scheduled_task.remove()
         # Удаление задачи из базы данных
