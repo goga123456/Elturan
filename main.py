@@ -76,7 +76,7 @@ def delete_task(task_id):
             if result:
                 scheduled_task_id = result[0]
                 print(result[0])
-                scheduled_task = scheduled_tasks.pop(result[0], None)
+                scheduled_task = scheduled_tasks.pop(result[0])
                 print(scheduled_task)
                 if scheduled_task:
                     scheduled_task.remove()
