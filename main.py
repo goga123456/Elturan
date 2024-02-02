@@ -73,8 +73,7 @@ def delete_task(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
             conn.commit()
-            if result:
-                if result[0] in scheduled_tasks:
+            if result[0] in scheduled_tasks:
                 scheduled_tasks[result[0]].remove()
                 del scheduled_tasks[result[0]]  
             
