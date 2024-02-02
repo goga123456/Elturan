@@ -82,7 +82,7 @@ def delete_task(task_id):
             if result:
                 job_id = int(result[0]) 
                 print(job_id)
-                print_all_jobs()
+                await print_all_jobs()
                 try:
                     scheduler.remove_job(job_id)
                     print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
