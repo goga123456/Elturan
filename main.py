@@ -76,12 +76,12 @@ def delete_task(task_id):
             conn.commit()
             if result:
                 job_id = result[0]   
-        if job_id:
-            try:
-                scheduler.remove_job(job_id)
-                print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
-            except JobLookupError as e:
-                print(f"Job {job_id} not found in APScheduler. It might have been already removed. Error: {e}")    
+                try:
+                    scheduler.remove_job(job_id)
+                    print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
+                except JobLookupError as e:
+                    print(f"Job {job_id} not found in APScheduler. It might have been already removed. Error: {e}")  
+          
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
             cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
