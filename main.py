@@ -422,6 +422,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
+                print(job.id)
             if data['priority'] == '2':
                 task_id2 = save_task_to_db('prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
