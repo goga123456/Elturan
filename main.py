@@ -73,9 +73,13 @@ def delete_task(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
             conn.commit()
-            if result[0] in scheduled_tasks:
-                scheduled_tasks[result[0]].remove()
-                del scheduled_tasks[result[0]]  
+        if result is not None:
+            job_id = result[0] 
+            if job_id in scheduled_tasks:
+                scheduled_tasks[job_id].remove()
+                del scheduled_tasks[job_id]        
+        else:
+            print(f"No scheduled task found with task ID {task_id}")    
             
         # Удаление задачи из базы данных
         with conn, conn.cursor() as cursor:
