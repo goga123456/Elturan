@@ -82,7 +82,7 @@ def delete_task(task_id):
             if result:
                 job_id = int(result[0]) 
                 print(job_id)
-                await print_all_jobs()
+      
                 try:
                     scheduler.remove_job(job_id)
                     print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
@@ -296,6 +296,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
+        await print_all_jobs()
         delete_task(date[1])
         await ProfileStatesGroup.main_menu.set()
        
