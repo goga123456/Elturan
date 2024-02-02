@@ -16,6 +16,7 @@ import asyncpg
 from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
+from apscheduler.jobstores.base import JobLookupError
 CHANNEL_ID = -1002018175768
 
 scheduled_tasks = {}
