@@ -52,7 +52,7 @@ cursor.execute("""
 """)
 conn.commit()
 
-def save_task_to_db(id,task_type, run_date, args):
+def save_task_to_db(id, task_type, run_date, args):
     try:
         # Convert args to a JSON-formatted string
         args_json = json.dumps(args)
@@ -63,7 +63,7 @@ def save_task_to_db(id,task_type, run_date, args):
             task_id = cursor.fetchone()[0]
             conn.commit()  # Commit the transaction
         
-        return task_id
+        return id
     except psycopg2.Error as e:
         print("Error saving task to database:", e)
         conn.rollback()  # Rollback the transaction in case of an error
