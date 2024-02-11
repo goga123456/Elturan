@@ -73,7 +73,7 @@ async def print_all_jobs():
     print("Запланированные задачи:")
     for job in jobs:
         print(f"ID задачи: {job.id}, Имя: {job.name}, Следующий запуск: {job.next_run_time}, Триггер: {job.trigger}")      
-def delete_task(task_id):
+async def delete_task(task_id):
     try:
         with conn, conn.cursor() as cursor:
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
