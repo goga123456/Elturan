@@ -83,6 +83,8 @@ def delete_task(task_id):
                 job_id = result[0]
                 print(job_id)
                 jobs = scheduler.get_jobs()
+                for job in jobs:
+                    print(f"Job ID: {job.id}")
                 #try:
                 scheduler.remove_job(job_id)
                 print(f"Task {task_id} with job ID {job_id} removed from scheduler.")
