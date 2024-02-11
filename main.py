@@ -81,16 +81,13 @@ async def delete_task(task_id):
             if result:
                 job_id = result[0]
                 print(f"Trying to delete job with ID: {job_id}")
-                
-                job_id1 = job_id.replace("-", "")
-                job_id2 = scheduler.get_job(job_id1)
-                print(job_id2)
+
                 # Проверка, существует ли задача перед удалением
-                if scheduler.get_job(job_id1):
-                    scheduler.remove_job(job_id1)
-                    print(f"Job {job_id1} removed successfully")
+                if scheduler.get_job(job_id):
+                    scheduler.remove_job(job_id)
+                    print(f"Job {job_id} removed successfully")
                 else:
-                    print(f"No job with ID {job_id1} was found in the scheduler")
+                    print(f"No job with ID {job_id} was found in the scheduler")
             cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             conn.commit()
 
