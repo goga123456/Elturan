@@ -80,7 +80,7 @@ def delete_task(task_id):
             result = cursor.fetchone()
             conn.commit()
             if result:
-                job_id = int(result[0]) 
+                job_id = result[0]
                 print(job_id)
       
                 try:
