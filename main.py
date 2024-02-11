@@ -60,7 +60,7 @@ def save_task_to_db(id, task_type, run_date, args):
         with conn, conn.cursor() as cursor:
             cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
                            (id, task_type, run_date, args_json))
-            id = cursor.fetchone()[0]
+            #id = cursor.fetchone()[0]
             conn.commit()  # Commit the transaction
         
         return id
