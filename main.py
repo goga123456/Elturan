@@ -73,8 +73,16 @@ async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
     for job in jobs:
-        print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")      
+        print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
+      
 async def delete_task(task_id):
+    try:
+        with conn, conn.cursor() as cursor:
+            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
+            conn.commit()
+
+
+async def delete_task_from_schedule(task_id):
     try:
         with conn, conn.cursor() as cursor:
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
@@ -91,14 +99,12 @@ async def delete_task(task_id):
                     print(f"Job {job_id} removed successfully")
                 else:
                     print(f"No job with ID {job_id} was found in the scheduler")
-            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-            conn.commit()
-
     except psycopg2.Error as e:
         print(f"Error deleting task {task_id} from schedule:", e)
         conn.rollback()
         raise
-      
+
+
 async def restore_tasks_from_db():
     cursor.execute("SELECT * FROM scheduled_tasks")
     tasks = cursor.fetchall()
@@ -124,7 +130,7 @@ async def prosrochen(number, priority, category, desc):
                                        f"Приоритет: {priority}\n"
                                        f"Категория: {category}\n"
                                        f"Описание: {desc}\n")
-    await delete_task(number)
+    delete_task(number)
 
 async def incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
@@ -301,6 +307,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
         await print_all_jobs()
+        await delete_task_from_schedule(date[1])
         await delete_task(date[1])
         await ProfileStatesGroup.main_menu.set()
        
@@ -335,7 +342,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"Категория: {date[2]}\n"
                                                f"Описание: {date[3]}\n")
             await ProfileStatesGroup.main_menu.set()
-            delete_task(date[1])
+            await delete_task_from_schedule(date[1])
+            await delete_task(date[1])
             
     if callback_query.data == "back":
         await bot.send_message(chat_id=callback_query.from_user.id, text="🔙", reply_markup=create_incident_kb())
@@ -358,7 +366,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
-        delete_task(date[1])
+        await delete_task_from_schedule(date[1])
+        await delete_task(date[1])
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
@@ -421,6 +430,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time3 = datetime.now() + timedelta(seconds=30)
             run_time4 = datetime.now() + timedelta(seconds=40)
             run_time5 = datetime.now() + timedelta(seconds=50)
+          
             task_uuid = str(uuid.uuid4())
             if data['priority'] == '1':
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time1, id=task_uuid, 
