@@ -306,8 +306,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
         await print_all_jobs()
-        await delete_task_from_schedule(date[1])
         await delete_task(date[1])
+        await delete_task_from_schedule(date[1])
         await ProfileStatesGroup.main_menu.set()
        
 
@@ -430,32 +430,32 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time4 = datetime.now() + timedelta(seconds=40)
             run_time5 = datetime.now() + timedelta(seconds=50)
           
-            task_uuid = str(uuid.uuid4())
+            #task_uuid = str(uuid.uuid4())
             if data['priority'] == '1':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time1, id=task_uuid,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time1, 
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 await print_all_jobs()
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '2':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time2, id=task_uuid,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 await print_all_jobs()
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '3':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time3, id=task_uuid,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 await print_all_jobs()
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '4':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time4, id=task_uuid,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '5':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time5, id=task_uuid,
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
