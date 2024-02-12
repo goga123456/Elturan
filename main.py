@@ -73,7 +73,7 @@ async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
     for job in jobs:
-        print(f"ID задачи: {job.id}, Имя: {job.name}, Следующий запуск: {job.next_run_time}, Триггер: {job.trigger}")      
+        print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")      
 async def delete_task(task_id):
     try:
         with conn, conn.cursor() as cursor:
@@ -83,7 +83,7 @@ async def delete_task(task_id):
                 job_id = uuid.UUID(result[0])
                 print(f"Trying to delete job with ID: {job_id}")
                 print(job_id)
-                print(scheduler.get_job(str(job_id)))
+                print(scheduler.get_job(job_id))
                 # Проверка, существует ли задача перед удалением
                 if scheduler.get_job(job_id):
                     scheduler.remove_job(job_id)
@@ -429,11 +429,13 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
+                await print_all_jobs()
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '3':
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
+                await print_all_jobs()
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '4':
                 job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
