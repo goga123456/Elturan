@@ -17,6 +17,7 @@ from aiogram.utils.executor import start_webhook
 import logging
 from db import Database
 from apscheduler.jobstores.base import JobLookupError
+import uuid
 CHANNEL_ID = -1002018175768
 
 #scheduled_tasks = {}
@@ -79,9 +80,9 @@ async def delete_task(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
             if result:
-                job_id = result[0]
+                job_id = uuid.UUID(result[0])
                 print(f"Trying to delete job with ID: {job_id}")
-                print(str(scheduler.get_job(job_id)))
+          
                 # Проверка, существует ли задача перед удалением
                 if scheduler.get_job(job_id):
                     scheduler.remove_job(job_id)
