@@ -75,11 +75,10 @@ async def print_all_jobs():
     for job in jobs:
         print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
       
-async def delete_task(task_id):
-    try:
-        with conn, conn.cursor() as cursor:
-            cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-            conn.commit()
+async def delete_task(task_id):   
+    with conn, conn.cursor() as cursor:
+        cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
+        conn.commit()
 
 
 async def delete_task_from_schedule(task_id):
