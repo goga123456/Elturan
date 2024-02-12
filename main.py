@@ -430,9 +430,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time4 = datetime.now() + timedelta(seconds=40)
             run_time5 = datetime.now() + timedelta(seconds=50)
           
-            task_uuid = str(uuid.uuid4())
+            #task_uuid = str(uuid.uuid4())
             if data['priority'] == '1':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time1, id=task_uuid, 
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 await print_all_jobs()
