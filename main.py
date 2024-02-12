@@ -81,7 +81,7 @@ async def delete_task(task_id):
             if result:
                 job_id = result[0]
                 print(f"Trying to delete job with ID: {job_id}")
-                print(scheduler.get_job(job_id))
+                print(str(scheduler.get_job(job_id)))
                 # Проверка, существует ли задача перед удалением
                 if scheduler.get_job(job_id):
                     scheduler.remove_job(job_id)
