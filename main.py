@@ -129,7 +129,7 @@ async def prosrochen(number, priority, category, desc):
                                        f"Приоритет: {priority}\n"
                                        f"Категория: {category}\n"
                                        f"Описание: {desc}\n")
-    delete_task(number)
+    await delete_task(number)
 
 async def incidents() -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
