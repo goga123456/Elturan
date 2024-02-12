@@ -86,8 +86,8 @@ async def delete_task(task_id):
                 print(job_id)
                 print(scheduler.get_job(job_id))
                 # Проверка, существует ли задача перед удалением
-                if scheduler.get_job(job_id):
-                    scheduler.remove_job(job_id)
+                if scheduler.get_job(str(job_id)):
+                    #scheduler.remove_job(job_id)
                     print(f"Job {job_id} removed successfully")
                 else:
                     print(f"No job with ID {job_id} was found in the scheduler")
