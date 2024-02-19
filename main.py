@@ -346,6 +346,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await ProfileStatesGroup.solve.set()
        
 
+@dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.solve)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
+        data['solve'] = message.text
+        await bot.send_message(CHANNEL_ID, f"{data['solve']}", reply_markup = create_incident_kb())
+        await ProfileStatesGroup.main_menu.set()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
