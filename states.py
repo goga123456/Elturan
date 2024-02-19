@@ -12,6 +12,7 @@ class ProfileStatesGroup(StatesGroup):
     edit_incident = State()
     edit_incident_kb = State()
     change_priority = State()
+    change_desc = State()
     recovery_incident = State()
 
 
