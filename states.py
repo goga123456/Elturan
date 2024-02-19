@@ -5,6 +5,7 @@ class ProfileStatesGroup(StatesGroup):
     main_menu = State()
     number_of_incident = State()
     category_of_incident = State()
+    category_hand = State()
     description = State()
     priority = State()
     close_incident = State()
