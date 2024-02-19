@@ -116,17 +116,16 @@ async def restore_tasks_from_db():
                 job = scheduler.add_job(delete_msg, "date", run_date=run_date, args=args, max_instances=1)
             elif task_type == 'prosrochen':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
-
             scheduled_tasks[task_id] = job
         except Exception as e:
             print(f"Error restoring task {task_id}: {e}")
 
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
-    await bot.send_message(CHANNEL_ID, f"Просрочен SLA\n"
+    await bot.send_message(CHANNEL_ID, f"{category}\n"
+                                       f"Просрочен SLA\n"
                                        f"Номер инцидента: {number}\n"
                                        f"Приоритет: {priority}\n"
-                                       f"Категория: {category}\n"
                                        f"Описание: {desc}\n")
     await delete_task(number)
 
@@ -258,10 +257,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         dates = await baza.select_closed_incident(data['choose'])
-        await bot.send_message(CHANNEL_ID, f"Инцидент открыт заново\n"
+        await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
+                                           f"Инцидент открыт заново\n"
                                            f"Номер инцидента: {dates[1]}\n"
                                            f"Приоритет: {dates[4]}\n"
-                                           f"Категория: {dates[2]}\n"
                                            f"Описание: {dates[3]}\n")
         await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт')
         await baza.delete_incident_from_deleted(data['choose'])
@@ -310,10 +309,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         date = await baza.select_incident(data['choose'])
-        await bot.send_message(CHANNEL_ID, f"Инцидент закрыт\n"
+        await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+                                           f"Инцидент закрыт\n"
                                            f"Номер инцидента: {date[1]}\n"
                                            f"Приоритет: {date[4]}\n"
-                                           f"Категория: {date[2]}\n"
                                            f"Описание: {date[3]}\n")
         await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')
         await baza.delete_incident(data['choose'])
@@ -351,10 +350,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                    text=f"Статус инцидента номер {data['choose']} изменён на 'Просрочен SLA'")
             date = await baza.select_incident(data['choose'])
             await callback_query.message.delete()
-            await bot.send_message(CHANNEL_ID, f"Просрочен SLA\n"
+            await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+                                               f"Просрочен SLA\n"
                                                f"Номер инцидента: {date[1]}\n"
                                                f"Приоритет: {date[4]}\n"
-                                               f"Категория: {date[2]}\n"
                                                f"Описание: {date[3]}\n")
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
@@ -375,10 +374,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         date = await baza.select_incident(data['choose'])
         await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
         await callback_query.message.delete()
-        await bot.send_message(CHANNEL_ID, text=f"{date[5]}\n"
+        await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
                                                 f"Номер инцидента: {date[1]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
-                                                f"Категория: {date[2]}\n"
                                                 f"Описание: {date[3]}\n")
 
         await delete_task_from_schedule(date[1])
@@ -437,10 +435,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         async with state.proxy() as data:
             data['priority'] = callback_query.data
             await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто')
-            await bot.send_message(CHANNEL_ID, f"Инцидент открыт\n"
+            await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
+                                               f"Инцидент открыт\n"
                                                f"Номер инцидента: {data['number']}\n"
                                                f"Приоритет: {data['priority']}\n"
-                                               f"Категория: {data['category']}\n"
                                                f"Описание: {data['desc']}\n")
             #run_time1 = datetime.now() + timedelta(hours=4)
             #run_time2 = datetime.now() + timedelta(hours=12)
@@ -485,10 +483,11 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=callback_query.data, reply_markup=create_incident_kb())      
-        await bot.send_message(callback_query.message.chat.id, f"Инцидент открыт\n"
+        await bot.send_message(callback_query.message.chat.id, 
+                                               f"{data['category']}\n"
+                                               f"Инцидент открыт\n"
                                                f"Номер инцидента: {data['number']}\n"
                                                f"Приоритет: {data['priority']}\n"
-                                               f"Категория: {data['category']}\n"
                                                f"Описание: {data['desc']}\n")      
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
