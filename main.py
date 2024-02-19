@@ -87,8 +87,8 @@ async def delete_task_from_schedule(task_id):
             cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
             result = cursor.fetchone()
             if result:
-                #job_id = result[0]
-                job_id = uuid.UUID(result[0])
+                job_id = result[0].replace("-", "")
+                #job_id = uuid.UUID(result[0])
                 print(f"Trying to delete job with ID: {job_id}")
                 print(job_id)
                 print(scheduler.get_job(job_id))
