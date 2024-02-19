@@ -226,7 +226,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         await ProfileStatesGroup.category_of_incident.set()
     else:
         async with state.proxy() as data:
-            data['category'] = message.text
+            data['category'] = f"#{message.text}"
         if len(data['category'])>100:
             await bot.send_message(chat_id=message.from_user.id,
                                    text="Слишком большое количество символов")  
