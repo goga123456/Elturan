@@ -124,7 +124,7 @@ async def restore_tasks_from_db():
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
     await bot.send_message(CHANNEL_ID, f"{category}\n"
-                                       f"{number} Просрочен SLA\n"
+                                       f"‼️ {number} Просрочен SLA\n"
                                        f"Приоритет: {priority}\n"
                                        f"Описание: {desc}\n")
     await delete_task(number)
@@ -329,7 +329,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         data['choose'] = callback_query.data
         date = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
-                                           f"Инцидент {date[1]} закрыт\n"
+                                           f"✅ Инцидент {date[1]} закрыт\n"
                                            f"Приоритет: {date[4]}\n"
                                            f"Описание: {date[3]}\n")
         await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')
@@ -369,7 +369,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             date = await baza.select_incident(data['choose'])
             await callback_query.message.delete()
             await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
-                                               f"{date[1]} Просрочен SLA\n"
+                                               f"‼️ {date[1]} Просрочен SLA\n"
                                                f"Приоритет: {date[4]}\n"
                                                f"Описание: {date[3]}\n")
             await ProfileStatesGroup.main_menu.set()
@@ -458,7 +458,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             data['priority'] = callback_query.data
             await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто')
             await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
-                                               f"Инцидент {data['number']} открыт\n"
+                                               f"🆕 Инцидент {data['number']} открыт\n"
                                                f"Приоритет: {data['priority']}\n"
                                                f"Описание: {data['desc']}\n")
             #run_time1 = datetime.now() + timedelta(hours=4)
