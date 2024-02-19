@@ -306,8 +306,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                text=f"Инцидент с номером {data['choose']} закрыт",
                                reply_markup=create_incident_kb())
         await print_all_jobs()
-        await delete_task(date[1])
         await delete_task_from_schedule(date[1])
+        await delete_task(date[1]) 
         await ProfileStatesGroup.main_menu.set()
        
 
