@@ -20,7 +20,7 @@ from apscheduler.jobstores.base import JobLookupError
 import uuid
 CHANNEL_ID = -1002018175768
 
-#scheduled_tasks = {}
+scheduled_tasks = {}
 
 storage = MemoryStorage()
 TOKEN = os.getenv('BOT_TOKEN')
