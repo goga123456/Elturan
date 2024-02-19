@@ -354,6 +354,11 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
             await delete_task(date[1])
+    if callback_query.data == "change_desc":
+        await callback_query.message.delete()
+        await bot.send_message(chat_id=callback_query.from_user.id, text="Описание:",
+                               reply_markup=get_start_kb())
+        await ProfileStatesGroup.change_desc.set()
             
     if callback_query.data == "back":
         await bot.send_message(chat_id=callback_query.from_user.id, text="🔙", reply_markup=create_incident_kb())
