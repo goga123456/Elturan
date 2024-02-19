@@ -104,8 +104,9 @@ async def delete_task_from_schedule(task_id):
 
 
 async def restore_tasks_from_db():
-    cursor.execute("SELECT * FROM scheduled_tasks")
-    tasks = cursor.fetchall()
+    with conn, conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM scheduled_tasks")
+        tasks = cursor.fetchall()
     job = None
 
     for task in tasks:
