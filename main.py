@@ -233,6 +233,23 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           text="Описание:", reply_markup=get_start_kb())
             await ProfileStatesGroup.description.set()
 
+
+
+@dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.change_desc)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
+        data['desc'] = message.text
+        date = await baza.select_incident(data['choose'])
+        if len(data['desc'])>2000:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Слишком большое количество символов")  
+        else:  
+            await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+                                               f"Инцидент {date[1]} Изменено описание\n"
+                                               f"Приоритет: {date[4]}\n"
+                                               f"Описание: {date[3]}\n")
+            await state.finish()
+
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     if message.text == "🔙":
