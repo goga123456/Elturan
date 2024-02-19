@@ -247,7 +247,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
             await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                                f"Инцидент {date[1]} Изменено описание\n"
                                                f"Приоритет: {date[4]}\n"
-                                               f"Описание: {date[3]}\n")
+                                               f"Описание: {data['desc']}\n")
+            update_description(data['desc'], date[1])
             await state.finish()
 
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
