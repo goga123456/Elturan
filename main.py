@@ -350,8 +350,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['solve'] = message.text
-        await bot.send_message(CHANNEL_ID, f"{data['solve']}", reply_markup = create_incident_kb())
-        await ProfileStatesGroup.main_menu.set()
+        await bot.send_message(CHANNEL_ID, f"{data['solve']}", reply_markup = get_start_kb())
+        await state.finish()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
