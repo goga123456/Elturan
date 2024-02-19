@@ -88,7 +88,6 @@ async def delete_task_from_schedule(task_id):
             result = cursor.fetchone()
             if result:
                 job_id = result[0].replace("-", "")
-                #job_id = uuid.UUID(result[0])
                 print(f"Trying to delete job with ID: {job_id}")
                 print(job_id)
                 print(scheduler.get_job(job_id))
@@ -218,6 +217,23 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                    text="Категория инцидента:",
                                    reply_markup=inc_category_kb())
             await ProfileStatesGroup.category_of_incident.set()
+
+@dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.category_hand)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    if message.text == "🔙":
+        await bot.send_message(chat_id=message.chat.id,
+                               text="Категория инцидента:", reply_markup=inc_category_kb())
+        await ProfileStatesGroup.category_of_incident.set()
+    else:
+        async with state.proxy() as data:
+            data['category'] = message.text
+        if len(data['category'])>100:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Слишком большое количество символов")  
+        else:  
+            await bot.send_message(chat_id=message.from_user.id,
+                          text="Описание:", reply_markup=get_start_kb())
+            await ProfileStatesGroup.description.set()
 
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
@@ -485,7 +501,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(state=ProfileStatesGroup.category_of_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
-    if callback_query.data == '#Интернет' or callback_query.data == '#Качество_связи' or callback_query.data == '#Внутренне_ПО' or callback_query.data == '#Услуги' or callback_query.data == '#Digital_Услуги' or callback_query.data == '#Beeline_Uzbekistan' or callback_query.data == '#Beepul' or callback_query.data == '#Оплата' or callback_query.data == '#Beeline_TV':
+    if callback_query.data == '#Качество_связи_и_интернета' or callback_query.data == '#app_Beeline_Uzbekistan' or callback_query.data == '#Внутренне_ПО' or callback_query.data == '#База_знаний' or callback_query.data == '#Интерфейсы_CPA' or callback_query.data == '#Beepul' or callback_query.data == '#Beeline_TV' or callback_query.data == '#Beeline_Music' or callback_query.data == '#Дозвон_в_КЦ' or callback_query.data == '#Акции' or callback_query.data == '#CVM_активности' or callback_query.data == '#USSD_запросы' or callback_query.data == '#SMS' or callback_query.data == '#Корпоративный_сайт' or callback_query.data == '#Balance':
         async with state.proxy() as data:
             data['category'] = callback_query.data
         await callback_query.message.delete()
@@ -493,6 +509,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(chat_id=callback_query.from_user.id,
                                text="Описание:", reply_markup=get_start_kb())
         await ProfileStatesGroup.description.set()
+    if callback_query.data == 'hand':
+        async with state.proxy() as data:
+            await callback_query.message.delete()
+            await bot.send_message(chat_id=callback_query.message.chat.id,
+                                   text="Напишите категорию")
+            await ProfileStatesGroup.category_hand.set()  
     if callback_query.data == 'back':
         async with state.proxy() as data:
             await callback_query.message.delete()
