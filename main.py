@@ -336,12 +336,14 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await baza.delete_incident(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=f"Инцидент с номером {data['choose']} закрыт",
-                               reply_markup=create_incident_kb())
+                               text=f"Инцидент с номером {data['choose']} закрыт")
         await print_all_jobs()
         await delete_task_from_schedule(date[1])
         await delete_task(date[1]) 
-        await ProfileStatesGroup.main_menu.set()
+        await bot.send_message(chat_id=callback_query.message.chat.id,
+                               text=f"Напишите как решили данный инцидент",
+                               reply_markup=get_start_kb())
+        await ProfileStatesGroup.solve.set()
        
 
 
