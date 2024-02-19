@@ -14,5 +14,6 @@ class ProfileStatesGroup(StatesGroup):
     change_priority = State()
     change_desc = State()
     recovery_incident = State()
+    solve = State()
 
 
