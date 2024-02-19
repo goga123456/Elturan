@@ -15,7 +15,8 @@ def edit_kb() -> InlineKeyboardMarkup:
     kpriority = InlineKeyboardMarkup(resize_keyboard=True)
     b1 = InlineKeyboardButton('Изменить приоритет', callback_data='change priority')
     b2 = InlineKeyboardButton('Просрочен SLA', callback_data='prosrochen')
-    b3 = InlineKeyboardButton('Назад', callback_data='back')
+    b3 = InlineKeyboardButton('Изменить описание', callback_data='change_desc')
+    b4 = InlineKeyboardButton('Назад', callback_data='back')
     kpriority.add(b1,b2).add(b3)
     return kpriority
 
