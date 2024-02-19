@@ -248,7 +248,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                                f"Инцидент {date[1]} Изменено описание\n"
                                                f"Приоритет: {date[4]}\n"
                                                f"Описание: {data['desc']}\n")
-            update_description(data['desc'], date[1])
+            await baza.update_description(data['desc'], date[1])
             await state.finish()
 
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
