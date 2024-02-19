@@ -250,6 +250,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                                f"Приоритет: {date[4]}\n"
                                                f"Описание: {data['desc']}\n")
             await baza.update_description(data['desc'], date[1])
+            await bot.send_message(chat_id=message.from_user.id,
+                           text="Описание изменено")
             await state.finish()
 
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.description)
