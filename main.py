@@ -405,7 +405,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await baza.update_priority(int(data['priority']), data['choose'])
         date = await baza.select_incident(data['choose'])
         await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
-        await callback_query.message.delete()
+        #await callback_query.message.delete()
         await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
                                                 f"Номер инцидента: {date[1]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
