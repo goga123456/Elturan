@@ -401,6 +401,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             callback_query.data == '1' or callback_query.data == '2' or callback_query.data == '3' or callback_query.data == '4' or callback_query.data == '5'):
         async with state.proxy() as data:
             data['priority'] = callback_query.data
+        ex_priority = await baza.select_priority(data['choose'])
         await baza.update_priority(int(data['priority']), data['choose'])
         date = await baza.select_incident(data['choose'])
         await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
@@ -412,17 +413,34 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
+              
+        created_at = await baza.select_created_date(date[1])  
+        difference = datetime.now() - created_at      
+              
         #run_time1 = datetime.now() + timedelta(hours=4)
         #run_time2 = datetime.now() + timedelta(hours=12)
         #run_time3 = datetime.now() + timedelta(hours=24)
         #run_time4 = datetime.now() + timedelta(hours=72)
         #run_time5 = datetime.now() + timedelta(hours=168)
 
-        run_time1 = datetime.now() + timedelta(seconds=10)
-        run_time2 = datetime.now() + timedelta(seconds=20)
-        run_time3 = datetime.now() + timedelta(seconds=30)
-        run_time4 = datetime.now() + timedelta(seconds=40)
-        run_time5 = datetime.now() + timedelta(seconds=50)      
+        if int(data['priority']) < int(ex_priority):
+            run_time1 = datetime.now() + timedelta(seconds=10)
+            run_time2 = datetime.now() + timedelta(seconds=20)
+            run_time3 = datetime.now() + timedelta(seconds=30)
+            run_time4 = datetime.now() + timedelta(seconds=40)
+            run_time5 = datetime.now() + timedelta(seconds=50)  
+        elif int(data['priority']) > int(ex_priority):
+            run_time1 = datetime.now() + timedelta(seconds=10) - difference
+            run_time2 = datetime.now() + timedelta(seconds=20) - difference
+            run_time3 = datetime.now() + timedelta(seconds=30) - difference
+            run_time4 = datetime.now() + timedelta(seconds=40) - difference
+            run_time5 = datetime.now() + timedelta(seconds=50) - difference
+            
+          
+              
+              
+        
+            
 
         if date[4] == 1:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
