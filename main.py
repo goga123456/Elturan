@@ -349,9 +349,9 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                            f"Приоритет: {date[4]}\n"
                                            f"Описание: {date[3]}\n"
                                            f"Причина: {data['solve']}")
-        await baza.delete_incident(data['choose'])
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт")
+        await baza.delete_incident(data['choose'])
         await state.finish()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident)
