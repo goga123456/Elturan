@@ -423,19 +423,23 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         #run_time4 = datetime.now() + timedelta(hours=72)
         #run_time5 = datetime.now() + timedelta(hours=168)
 
-        if int(data['priority']) < int(ex_priority):
-            run_time1 = datetime.now() + timedelta(seconds=10)
-            run_time2 = datetime.now() + timedelta(seconds=20)
-            run_time3 = datetime.now() + timedelta(seconds=30)
-            run_time4 = datetime.now() + timedelta(seconds=40)
-            run_time5 = datetime.now() + timedelta(seconds=50)  
-        elif int(data['priority']) > int(ex_priority):
-            run_time1 = datetime.now() + timedelta(seconds=10) - difference
-            run_time2 = datetime.now() + timedelta(seconds=20) - difference
-            run_time3 = datetime.now() + timedelta(seconds=30) - difference
-            run_time4 = datetime.now() + timedelta(seconds=40) - difference
-            run_time5 = datetime.now() + timedelta(seconds=50) - difference
-            
+        #if int(data['priority']) < int(ex_priority):
+            #run_time1 = datetime.now() + timedelta(seconds=10)
+            #run_time2 = datetime.now() + timedelta(seconds=20)
+            #run_time3 = datetime.now() + timedelta(seconds=30)
+            #run_time4 = datetime.now() + timedelta(seconds=40)
+            #run_time5 = datetime.now() + timedelta(seconds=50)  
+        #elif int(data['priority']) > int(ex_priority):
+            #run_time1 = datetime.now() + timedelta(seconds=10) - difference
+            #run_time2 = datetime.now() + timedelta(seconds=20) - difference
+            #run_time3 = datetime.now() + timedelta(seconds=30) - difference
+            #run_time4 = datetime.now() + timedelta(seconds=40) - difference
+            #run_time5 = datetime.now() + timedelta(seconds=50) - difference
+        run_time1 = datetime.now() + timedelta(seconds=10) - difference
+        run_time2 = datetime.now() + timedelta(seconds=20) - difference
+        run_time3 = datetime.now() + timedelta(seconds=30) - difference
+        run_time4 = datetime.now() + timedelta(seconds=40) - difference
+        run_time5 = datetime.now() + timedelta(seconds=50) - difference    
           
               
               
