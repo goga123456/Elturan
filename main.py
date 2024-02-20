@@ -333,7 +333,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await print_all_jobs()
         await delete_task_from_schedule(date[1])
         await delete_task(date[1]) 
-        await bot.send_message(chat_id=callback_query.message.chat.id,
+        await bot.send_message(chat_id=message.chat.id,
                                text=f"Напишите как решили данный инцидент",
                                reply_markup=get_start_kb())
         await ProfileStatesGroup.solve.set()
