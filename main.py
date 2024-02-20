@@ -345,7 +345,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         data['solve'] = message.text
         date = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
-                                           f"Инцидент {date[1]} закрыт\n"
+                                           f"✅Инцидент {date[1]} закрыт\n"
                                            f"Приоритет: {date[4]}\n"
                                            f"Описание: {date[3]}\n"
                                            f"Причина: {data['solve']}")
