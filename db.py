@@ -88,7 +88,8 @@ class Database:
         conn = await self.connect()
         try:
             result = await conn.fetchrow('SELECT created_at FROM incidents WHERE inc_number = $1', inc_number)
-            return result
+            timestamp = result[0]
+            return timestamp
         finally:
             await conn.close()
 
