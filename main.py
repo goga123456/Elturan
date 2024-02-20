@@ -330,8 +330,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         date = await baza.select_incident(data['choose'])
         await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')      
         await callback_query.message.delete()
-        await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=f"Инцидент с номером {data['choose']} закрыт")
         await print_all_jobs()
         await delete_task_from_schedule(date[1])
         await delete_task(date[1]) 
@@ -352,6 +350,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                            f"Описание: {date[3]}\n"
                                            f"Причина: {data['solve']}")
         await baza.delete_incident(data['choose'])
+        await bot.send_message(chat_id=callback_query.message.chat.id,
+                               text=f"Инцидент с номером {data['choose']} закрыт")
         await state.finish()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident)
