@@ -410,12 +410,13 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Номер инцидента: {date[1]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
                                                 f"Описание: {date[3]}\n")
-
+        
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
               
         created_at = await baza.select_created_date(date[1])  
-        difference = datetime.now() - datetime.fromtimestamp(created_at)      
+        created_at_value = record['created_at']      
+        difference = datetime.now() - datetime.fromtimestamp(created_at_value)      
               
         #run_time1 = datetime.now() + timedelta(hours=4)
         #run_time2 = datetime.now() + timedelta(hours=12)
