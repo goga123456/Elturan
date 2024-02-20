@@ -19,27 +19,27 @@ class Database:
             await conn.close()
     
 
-    async def insert(self, inc_number, inc_category, desc, priority, status):
+    async def insert(self, inc_number, inc_category, desc, priority, status, created_at):
         conn = await self.connect()
         try:
             # Преобразование priority в целое число
             priority_int = int(priority)
 
             await conn.execute(
-                'INSERT INTO incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
-                inc_number, inc_category, desc, priority_int, status)
+                'INSERT INTO incidents (inc_number, inc_category, "desc", priority, created_at) VALUES ($1, $2, $3, $4, $5, $6);',
+                inc_number, inc_category, desc, priority_int, created_at)
         finally:
             await conn.close()
 
-    async def insert_deleted(self, inc_number, inc_category, desc, priority, status):
+    async def insert_deleted(self, inc_number, inc_category, desc, priority, status, created_at):
         conn = await self.connect()
         try:
             # Преобразование priority в целое число
             priority_int = int(priority)
 
             await conn.execute(
-                'INSERT INTO closed_incidents (inc_number, inc_category, "desc", priority, status) VALUES ($1, $2, $3, $4, $5);',
-                inc_number, inc_category, desc, priority_int, status)
+                'INSERT INTO closed_incidents (inc_number, inc_category, "desc", priority, status, created_at) VALUES ($1, $2, $3, $4, $5, $6);',
+                inc_number, inc_category, desc, priority_int, status, created_at)
         finally:
             await conn.close()   
 
