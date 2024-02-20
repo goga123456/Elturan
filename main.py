@@ -429,7 +429,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time3 = datetime.now() + timedelta(seconds=30) - difference
             run_time4 = datetime.now() + timedelta(seconds=40) - difference
             run_time5 = datetime.now() + timedelta(seconds=50) - difference
-       
+            
         if date[4] == 1:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[date[1], date[4], date[2], date[3]],
