@@ -39,7 +39,7 @@ def inc_category_kb() -> InlineKeyboardMarkup:
     b15 = InlineKeyboardButton('Balance', callback_data='#Balance')
     b16 = InlineKeyboardButton('Яндекс Плюс', callback_data='#Яндекс_Плюс')
     b17 = InlineKeyboardButton('Телеграмм', callback_data='#Телеграмм')
-    b18 = InlineKeyboardButton('Beeline Visa ', callback_data='#Beeline_Visa ')
+    b18 = InlineKeyboardButton('Beeline Visa ', callback_data='#Beeline_Visa')
     b19 = InlineKeyboardButton('OQ mobile', callback_data='#OQ_mobile')
     b20 = InlineKeyboardButton('Написать вручную', callback_data='hand')
     b21 = InlineKeyboardButton('Назад', callback_data='back')
