@@ -80,7 +80,7 @@ class Database:
         conn = await self.connect()
         try:
             result = await conn.fetchrow('SELECT priority FROM incidents WHERE inc_number = $1', inc_number)
-            return result
+            return result[0]
         finally:
             await conn.close()
 
