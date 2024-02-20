@@ -281,7 +281,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                            f"Инцидент {dates[1]} открыт заново\n"
                                            f"Приоритет: {dates[4]}\n"
                                            f"Описание: {dates[3]}\n")
-        await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт')
+        await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт', datetime.now())
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
@@ -328,7 +328,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         date = await baza.select_incident(data['choose'])
-        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')      
+        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт', date[6])      
         await callback_query.message.delete()
         await print_all_jobs()
         await delete_task_from_schedule(date[1])
@@ -465,7 +465,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             callback_query.data == '4' or callback_query.data == '5'):
         async with state.proxy() as data:
             data['priority'] = callback_query.data
-            await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто')
+            await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто', datetime.now())
             await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
                                                f"🆕 Инцидент {data['number']} открыт\n"
                                                f"Приоритет: {data['priority']}\n"
