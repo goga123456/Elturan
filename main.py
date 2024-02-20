@@ -328,8 +328,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         date = await baza.select_incident(data['choose'])
-        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')
-        await baza.delete_incident(data['choose'])
+        await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт')      
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт")
@@ -352,6 +351,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                            f"Приоритет: {date[4]}\n"
                                            f"Описание: {date[3]}\n"
                                            f"Причина: {data['solve']}")
+        await baza.delete_incident(data['choose'])
         await state.finish()
 
 @dp.callback_query_handler(state=ProfileStatesGroup.edit_incident)
