@@ -456,7 +456,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1) 
             save_task_to_db(job.id, 'prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
-        await callback_query.message.delete()  
+        #await callback_query.message.delete()  
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
