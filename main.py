@@ -430,8 +430,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time4 = datetime.now() + timedelta(seconds=40) - difference
             run_time5 = datetime.now() + timedelta(seconds=50) - difference
         else:
-            await bot.send_message(CHANNEL_ID, text=f"Вы меняете приоритет на тот же который был, выберите другой")
-            await bot.send_message(chat_id=callback_query.message.from_user.id,
+            await bot.send_message(callback_query.message.chat.id, text=f"Вы меняете приоритет на тот же который был, выберите другой")
+            await bot.send_message(callback_query.message.chat.id,
                           text="Приоритет:",
                           reply_markup=priority_kb())
             await ProfileStatesGroup.priority.set()
