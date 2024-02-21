@@ -417,7 +417,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         created_at = await baza.select_created_date(date[1])   
         difference = datetime.now() - created_at    
 
-        if int(data['priority']) < int(ex_priority):
+        if int(data['priority']) <= int(ex_priority):
             run_time1 = datetime.now() + timedelta(seconds=10)
             run_time2 = datetime.now() + timedelta(seconds=20)
             run_time3 = datetime.now() + timedelta(seconds=30)
