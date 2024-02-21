@@ -410,8 +410,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"Номер инцидента: {date[1]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
                                                 f"Описание: {date[3]}\n")
-              
-        await callback_query.message.delete()
         
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
@@ -458,6 +456,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1) 
             save_task_to_db(job.id, 'prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
+        await callback_query.message.delete()  
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
