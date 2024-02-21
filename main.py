@@ -530,7 +530,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               args=[data['number'], data['priority'], data['category'], data['desc']],
                               max_instances=1)
                 save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
-        await callback_query.message.delete()
+        #await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=callback_query.data, reply_markup=create_incident_kb())      
         await bot.send_message(callback_query.message.chat.id, 
