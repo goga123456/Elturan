@@ -402,14 +402,9 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         async with state.proxy() as data:
             data['priority'] = callback_query.data
         ex_priority = await baza.select_priority(data['choose'])
-        await baza.update_priority(int(data['priority']), data['choose'])
         date = await baza.select_incident(data['choose'])
-        await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
-        #await callback_query.message.delete()
-        await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
-                                                f"Номер инцидента: {date[1]}\n"
-                                                f"Приоритет изменён на {date[4]}\n"
-                                                f"Описание: {date[3]}\n")
+        
+        await callback_query.message.delete()
         
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
@@ -422,13 +417,25 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             run_time2 = datetime.now() + timedelta(seconds=20)
             run_time3 = datetime.now() + timedelta(seconds=30)
             run_time4 = datetime.now() + timedelta(seconds=40)
-            run_time5 = datetime.now() + timedelta(seconds=50)  
+            run_time5 = datetime.now() + timedelta(seconds=50) 
+            await baza.update_priority(int(data['priority']), data['choose'])
+            await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
+            await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
+                                                f"Номер инцидента: {date[1]}\n"
+                                                f"Приоритет изменён на {date[4]}\n"
+                                                f"Описание: {date[3]}\n")
         elif int(data['priority']) > int(ex_priority):
             run_time1 = datetime.now() + timedelta(seconds=10) - difference
             run_time2 = datetime.now() + timedelta(seconds=20) - difference
             run_time3 = datetime.now() + timedelta(seconds=30) - difference
             run_time4 = datetime.now() + timedelta(seconds=40) - difference
             run_time5 = datetime.now() + timedelta(seconds=50) - difference
+            await baza.update_priority(int(data['priority']), data['choose'])
+            await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")
+            await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
+                                                f"Номер инцидента: {date[1]}\n"
+                                                f"Приоритет изменён на {date[4]}\n"
+                                                f"Описание: {date[3]}\n")
         else:
             await bot.send_message(callback_query.message.chat.id, text=f"Вы меняете приоритет на тот же который был, выберите другой")
             await bot.send_message(callback_query.message.chat.id,
