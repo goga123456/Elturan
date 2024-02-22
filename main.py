@@ -418,17 +418,17 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         difference = datetime.now() - created_at    
 
         if int(data['priority']) <= int(ex_priority):
-            run_time1 = datetime.now() + timedelta(seconds=10)
-            run_time2 = datetime.now() + timedelta(seconds=20)
-            run_time3 = datetime.now() + timedelta(seconds=30)
-            run_time4 = datetime.now() + timedelta(seconds=40)
-            run_time5 = datetime.now() + timedelta(seconds=50) 
+            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time2 = datetime.now() + timedelta(hours=12)
+            run_time3 = datetime.now() + timedelta(hours=24)
+            run_time4 = datetime.now() + timedelta(hours=72)
+            run_time5 = datetime.now() + timedelta(hours=168)
         elif int(data['priority']) > int(ex_priority):
-            run_time1 = datetime.now() + timedelta(seconds=10) - difference
-            run_time2 = datetime.now() + timedelta(seconds=20) - difference
-            run_time3 = datetime.now() + timedelta(seconds=30) - difference
-            run_time4 = datetime.now() + timedelta(seconds=40) - difference
-            run_time5 = datetime.now() + timedelta(seconds=50) - difference
+            run_time1 = datetime.now() + timedelta(hours=4) - difference
+            run_time2 = datetime.now() + timedelta(hours=12) - difference
+            run_time3 = datetime.now() + timedelta(hours=24) - difference
+            run_time4 = datetime.now() + timedelta(hours=72) - difference
+            run_time5 = datetime.now() + timedelta(hours=168) - difference
             
             
         if date[4] == 1:
@@ -478,16 +478,11 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"🆕 Инцидент {data['number']} открыт\n"
                                                f"Приоритет: {data['priority']}\n"
                                                f"Описание: {data['desc']}\n")
-            #run_time1 = datetime.now() + timedelta(hours=4)
-            #run_time2 = datetime.now() + timedelta(hours=12)
-            #run_time3 = datetime.now() + timedelta(hours=24)
-            #run_time4 = datetime.now() + timedelta(hours=72)
-            #run_time5 = datetime.now() + timedelta(hours=168)
-            run_time1 = datetime.now() + timedelta(seconds=10)
-            run_time2 = datetime.now() + timedelta(seconds=20)
-            run_time3 = datetime.now() + timedelta(seconds=30)
-            run_time4 = datetime.now() + timedelta(seconds=40)
-            run_time5 = datetime.now() + timedelta(seconds=50)
+            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time2 = datetime.now() + timedelta(hours=12)
+            run_time3 = datetime.now() + timedelta(hours=24)
+            run_time4 = datetime.now() + timedelta(hours=72)
+            run_time5 = datetime.now() + timedelta(hours=168)
           
             #task_uuid = str(uuid.uuid4())
             if data['priority'] == '1':
