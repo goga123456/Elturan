@@ -489,7 +489,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == 'add_cause':
         await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text="Напишите причину инцидента если она вам известна", reply_markup=cause_kb())  
+                               text="Напишите причину инцидента если она вам известна")  
         await ProfileStatesGroup.cause_yes.set()
 
     if callback_query.data == 'No':
@@ -596,9 +596,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                           args=[data['number'], data['priority'], data['category'], data['desc']],
                           max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
-        await bot.send_message(chat_id=message.from_user.id,
-                                text=callback_query.data, reply_markup=create_incident_kb())      
+            save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])   
         await bot.send_message(chat_id=message.from_user.id, 
                                               text=f"{data['category']}\n"
                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
