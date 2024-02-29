@@ -488,6 +488,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(state=ProfileStatesGroup.cause)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == 'add_cause':
+        await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text="Напишите причину инцидента если она вам известна")  
         await ProfileStatesGroup.cause_yes.set()
