@@ -600,7 +600,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         await bot.send_message(chat_id=message.from_user.id,
                                 text=callback_query.data, reply_markup=create_incident_kb())      
         await bot.send_message(chat_id=message.from_user.id, 
-                                              f"{data['category']}\n"
+                                              text=f"{data['category']}\n"
                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
                                               f"Приоритет: {data['priority']}\n"
                                               f"Описание: {data['desc']}\n"
