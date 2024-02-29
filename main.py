@@ -555,11 +555,13 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.cause_yes)
 async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
+        data['cause'] = message.text
         await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто', datetime.now())
         await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
                                            f"🆕ОТКРЫТ Инц. №{data['number']}\n"
                                            f"Приоритет: {data['priority']}\n"
-                                           f"Описание: {data['desc']}\n")
+                                           f"Описание: {data['desc']}\n"
+                                           f"Причина: {data['cause']}")
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
@@ -595,13 +597,15 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           args=[data['number'], data['priority'], data['category'], data['desc']],
                           max_instances=1)
             save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
-        await bot.send_message(chat_id=callback_query.message.chat.id,
+        await bot.send_message(chat_id=message.from_user.id,
                                 text=callback_query.data, reply_markup=create_incident_kb())      
-        await bot.send_message(callback_query.message.chat.id, 
+        await bot.send_message(chat_id=message.from_user.id, 
                                               f"{data['category']}\n"
                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
                                               f"Приоритет: {data['priority']}\n"
-                                              f"Описание: {data['desc']}\n")      
+                                              f"Описание: {data['desc']}\n"
+                                              f"Причина: {data['cause']}",
+                               reply_markup=create_incident_kb())      
         await ProfileStatesGroup.main_menu.set()
 
 
