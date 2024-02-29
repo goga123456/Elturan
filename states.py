@@ -16,5 +16,6 @@ class ProfileStatesGroup(StatesGroup):
     recovery_incident = State()
     solve = State()
     cause = State()
+    cause_yes = State()
 
 
