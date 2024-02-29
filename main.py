@@ -530,6 +530,20 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await ProfileStatesGroup.description.set()
 
 
+@dp.callback_query_handler(state=ProfileStatesGroup.cause)
+async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == '':
+
+    if callback_query.data == '':
+  
+    if callback_query.data == 'Back':
+        async with state.proxy() as data:
+            await callback_query.message.delete()
+            await bot.send_message(chat_id=callback_query.message.chat.id,
+                                   text="Описание:")
+            await ProfileStatesGroup.description.set()
+
+
 @dp.callback_query_handler(state=ProfileStatesGroup.category_of_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == '#Качество_связи_и_интернета' or callback_query.data == '#app_Beeline_Uzbekistan' or callback_query.data == '#Внутренне_ПО' or callback_query.data == '#База_знаний' or callback_query.data == '#Интерфейсы_CPA' or callback_query.data == '#Beepul' or callback_query.data == '#Beeline_TV' or callback_query.data == '#Beeline_Music' or callback_query.data == '#Дозвон_в_КЦ' or callback_query.data == '#Акции' or callback_query.data == '#CVM_активности' or callback_query.data == '#USSD_запросы' or callback_query.data == '#SMS' or callback_query.data == '#Корпоративный_сайт' or callback_query.data == '#Balance' or callback_query.data == '#Яндекс_Плюс' or callback_query.data == '#Телеграмм' or callback_query.data == '#Beeline_Visa' or callback_query.data == '#OQ_mobile':
