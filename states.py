@@ -15,5 +15,6 @@ class ProfileStatesGroup(StatesGroup):
     change_desc = State()
     recovery_incident = State()
     solve = State()
+    cause = State()
 
 
