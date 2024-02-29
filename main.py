@@ -493,11 +493,73 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await ProfileStatesGroup.cause_yes.set()
 
     if callback_query.data == 'No':
+        async with state.proxy() as data:
+            await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто', datetime.now())
+            await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
+                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                               f"Приоритет: {data['priority']}\n"
+                                               f"Описание: {data['desc']}\n")
+            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time2 = datetime.now() + timedelta(hours=12)
+            run_time3 = datetime.now() + timedelta(hours=24)
+            run_time4 = datetime.now() + timedelta(hours=72)
+            run_time5 = datetime.now() + timedelta(hours=168)
+          
+            #task_uuid = str(uuid.uuid4())
+            if data['priority'] == '1':
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time1, 
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '2':
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '3':
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '4':
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '5':
+                job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                              args=[data['number'], data['priority'], data['category'], data['desc']],
+                              max_instances=1)
+                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+            await bot.send_message(chat_id=callback_query.message.chat.id,
+                                   text=callback_query.data, reply_markup=create_incident_kb())      
+            await bot.send_message(callback_query.message.chat.id, 
+                                                  f"{data['category']}\n"
+                                                  f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                                  f"Приоритет: {data['priority']}\n"
+                                                  f"Описание: {data['desc']}\n")      
+            await ProfileStatesGroup.main_menu.set()
+
+    if callback_query.data == 'Back':
+        async with state.proxy() as data:
+            await callback_query.message.delete()
+            await bot.send_message(chat_id=message.from_user.id,
+                          text="Приоритет:",
+                          reply_markup=priority_kb())
+            await ProfileStatesGroup.priority.set()
+
+
+@dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.cause_yes)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
         await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто', datetime.now())
         await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
-                                              f"🆕ОТКРЫТ Инц. №{data['number']}\n"
-                                              f"Приоритет: {data['priority']}\n"
-                                              f"Описание: {data['desc']}\n")
+                                           f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                           f"Приоритет: {data['priority']}\n"
+                                           f"Описание: {data['desc']}\n")
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
@@ -507,8 +569,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         #task_uuid = str(uuid.uuid4())
         if data['priority'] == '1':
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1, 
-                          args=[data['number'], data['priority'], data['category'], data['desc']],
-                          max_instances=1)
+                           args=[data['number'], data['priority'], data['category'], data['desc']],
+                           max_instances=1)
             await print_all_jobs()
             save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
         if data['priority'] == '2':
@@ -534,21 +596,13 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                           max_instances=1)
             save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
         await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=callback_query.data, reply_markup=create_incident_kb())      
+                                text=callback_query.data, reply_markup=create_incident_kb())      
         await bot.send_message(callback_query.message.chat.id, 
-                                               f"{data['category']}\n"
-                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
-                                               f"Приоритет: {data['priority']}\n"
-                                               f"Описание: {data['desc']}\n")      
-        await ProfileStatesGroup.main_menu.set()    
-  
-    if callback_query.data == 'Back':
-        async with state.proxy() as data:
-            await callback_query.message.delete()
-            await bot.send_message(chat_id=message.from_user.id,
-                          text="Приоритет:",
-                          reply_markup=priority_kb())
-            await ProfileStatesGroup.priority.set()
+                                              f"{data['category']}\n"
+                                              f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                              f"Приоритет: {data['priority']}\n"
+                                              f"Описание: {data['desc']}\n")      
+        await ProfileStatesGroup.main_menu.set()
 
 
 @dp.callback_query_handler(state=ProfileStatesGroup.category_of_incident)
