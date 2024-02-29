@@ -20,6 +20,15 @@ def edit_kb() -> InlineKeyboardMarkup:
     kpriority.add(b1,b2).add(b3)
     return kpriority
 
+def cause_kb() -> InlineKeyboardMarkup:
+    cause_kb = InlineKeyboardMarkup(resize_keyboard=True)
+    b1 = InlineKeyboardButton('Добавить', callback_data='add_cause')
+    b2 = InlineKeyboardButton('Нет', callback_data='No')
+    b3 = InlineKeyboardButton('Назад', callback_data='Back')
+    cause_kb.add(b1,b2).add(b3)
+    return cause_kb
+
+
 def inc_category_kb() -> InlineKeyboardMarkup:
     category = InlineKeyboardMarkup(resize_keyboard=True)
     b1 = InlineKeyboardButton('Качество_связи_и_интернета', callback_data='#Качество_связи_и_интернета')
