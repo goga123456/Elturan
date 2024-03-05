@@ -604,8 +604,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                            f"ОТКРЫТ Инц. №{data['number']}\n"
                                            f"Приоритет: {data['priority']}\n"
                                            f"Описание: {data['desc']}\n"
-                                           f"Причина: {data['cause']}", reply_markup=create_incident_kb())        
-        await ProfileStatesGroup.main_menu.set()
+                                           f"Причина: {data['cause']}", reply_markup=get_start_kb())        
+        await state.finish()
 
 
 
