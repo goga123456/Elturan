@@ -473,7 +473,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             callback_query.data == '4' or callback_query.data == '5'):
         async with state.proxy() as data:
             data['priority'] = callback_query.data
-        await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.message.chat.id,
                                text=callback_query.data)      
         await bot.send_message(callback_query.message.chat.id, 
