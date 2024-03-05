@@ -600,7 +600,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           max_instances=1)
             save_task_to_db(job.id, 'prosrochen', run_time5, [data['number'], data['priority'], data['category'], data['desc']])
     
-        await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+        await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
                                            f"ОТКРЫТ Инц. №{data['number']}\n"
                                            f"Приоритет: {data['priority']}\n"
                                            f"Описание: {data['desc']}\n"
