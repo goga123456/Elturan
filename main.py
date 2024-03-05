@@ -561,45 +561,45 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
     async with state.proxy() as data:
         data['cause'] = message.text
         await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто', datetime.now())
-            await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
-                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
-                                               f"Приоритет: {data['priority']}\n"
-                                               f"Описание: {data['desc']}\n")
-            run_time1 = datetime.now() + timedelta(hours=4)
-            run_time2 = datetime.now() + timedelta(hours=12)
-            run_time3 = datetime.now() + timedelta(hours=24)
-            run_time4 = datetime.now() + timedelta(hours=72)
-            run_time5 = datetime.now() + timedelta(hours=168)
+        await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
+                                              f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                              f"Приоритет: {data['priority']}\n"
+                                              f"Описание: {data['desc']}\n")
+        run_time1 = datetime.now() + timedelta(hours=4)
+        run_time2 = datetime.now() + timedelta(hours=12)
+        run_time3 = datetime.now() + timedelta(hours=24)
+        run_time4 = datetime.now() + timedelta(hours=72)
+        run_time5 = datetime.now() + timedelta(hours=168)
           
-            #task_uuid = str(uuid.uuid4())
-            if data['priority'] == '1':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time1, 
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
-                              max_instances=1)
-                await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
-            if data['priority'] == '2':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
-                              max_instances=1)
-                await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
-            if data['priority'] == '3':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
-                              max_instances=1)
-                await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time3, [data['number'], data['priority'], data['category'], data['desc']])
-            if data['priority'] == '4':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
-                              max_instances=1)
-                save_task_to_db(job.id, 'prosrochen', run_time4, [data['number'], data['priority'], data['category'], data['desc']])
-            if data['priority'] == '5':
-                job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
-                              args=[data['number'], data['priority'], data['category'], data['desc']],
-                              max_instances=1)
-                save_task_to_db(job.id, 'prosrochen', run_time5, [data['number'], data['priority'], data['category'], data['desc']])
+        #task_uuid = str(uuid.uuid4())
+        if data['priority'] == '1':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time1, 
+                          args=[data['number'], data['priority'], data['category'], data['desc']],
+                          max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time1, [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '2':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                          args=[data['number'], data['priority'], data['category'], data['desc']],
+                          max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time2, [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '3':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                          args=[data['number'], data['priority'], data['category'], data['desc']],
+                          max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time3, [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '4':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                          args=[data['number'], data['priority'], data['category'], data['desc']],
+                          max_instances=1)
+            save_task_to_db(job.id, 'prosrochen', run_time4, [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '5':
+            job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                          args=[data['number'], data['priority'], data['category'], data['desc']],
+                          max_instances=1)
+            save_task_to_db(job.id, 'prosrochen', run_time5, [data['number'], data['priority'], data['category'], data['desc']])
         date = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                            f"ОТКРЫТ Инц. №{date[1]}\n"
