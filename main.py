@@ -113,13 +113,11 @@ async def restore_tasks_from_db():
         task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
 
         try:
-            if task_type == 'delete_msg':
-                job = scheduler.add_job(delete_msg, "date", run_date=run_date, args=args, max_instances=1)
-            elif task_type == 'prosrochen':
-                job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
-            scheduled_tasks[task_id] = job
+           if task_type == 'prosrochen':
+               job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+               scheduled_tasks[task_id] = job
         except Exception as e:
-            print(f"Error restoring task {task_id}: {e}")
+           print(f"Error restoring task {task_id}: {e}")
 
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
@@ -530,6 +528,135 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await ProfileStatesGroup.description.set()
 
 
+@dp.callback_query_handler(state=ProfileStatesGroup.cause)
+async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == 'add_cause':
+        await callback_query.message.delete()
+        await bot.send_message(chat_id=callback_query.message.chat.id,
+                               text="Причина:")
+        await ProfileStatesGroup.cause_yes.set()
+    if callback_query.data == 'No':
+        async with state.proxy() as data:
+            await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто',
+                              datetime.now())
+            await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
+                                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                               f"Приоритет: {data['priority']}\n"
+                                               f"Описание: {data['desc']}\n")
+            run_time1 = datetime.now() + timedelta(hours=4)
+            run_time2 = datetime.now() + timedelta(hours=12)
+            run_time3 = datetime.now() + timedelta(hours=24)
+            run_time4 = datetime.now() + timedelta(hours=72)
+            run_time5 = datetime.now() + timedelta(hours=168)
+
+            # task_uuid = str(uuid.uuid4())
+            if data['priority'] == '1':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                                        args=[data['number'], data['priority'], data['category'], data['desc']],
+                                        max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time1,
+                                [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '2':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                                        args=[data['number'], data['priority'], data['category'], data['desc']],
+                                        max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time2,
+                                [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '3':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                                        args=[data['number'], data['priority'], data['category'], data['desc']],
+                                        max_instances=1)
+                await print_all_jobs()
+                save_task_to_db(job.id, 'prosrochen', run_time3,
+                                [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '4':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                                        args=[data['number'], data['priority'], data['category'], data['desc']],
+                                        max_instances=1)
+                save_task_to_db(job.id, 'prosrochen', run_time4,
+                                [data['number'], data['priority'], data['category'], data['desc']])
+            if data['priority'] == '5':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                                        args=[data['number'], data['priority'], data['category'], data['desc']],
+                                        max_instances=1)
+                save_task_to_db(job.id, 'prosrochen', run_time5,
+                                [data['number'], data['priority'], data['category'], data['desc']])
+        await callback_query.message.delete()
+        await bot.send_message(chat_id=callback_query.message.chat.id,
+                               text=callback_query.data, reply_markup=create_incident_kb())
+        await bot.send_message(callback_query.message.chat.id,
+                               f"{data['category']}\n"
+                               f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                               f"Приоритет: {data['priority']}\n"
+                               f"Описание: {data['desc']}\n")
+        await ProfileStatesGroup.main_menu.set()
+    if callback_query.data == 'Back':
+        async with state.proxy() as data:
+            await callback_query.message.delete()
+            await bot.send_message(chat_id=callback_query.message.chat.id,
+                                   text="Приоритет:",
+                                   reply_markup=priority_kb())
+            await ProfileStatesGroup.priority.set()
+
+@dp.message_handler(content_types=[*types.ContentTypes.TEXT], state=ProfileStatesGroup.cause_yes)
+async def load_it_info(message: types.Message, state: FSMContext) -> None:
+    async with state.proxy() as data:
+        data['cause'] = message.text
+
+        await baza.insert(data['number'], data['category'], data['desc'], data['priority'], 'Открыто',
+                          datetime.now())
+        await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
+                                           f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                           f"Приоритет: {data['priority']}\n"
+                                           f"Описание: {data['desc']}\n"
+                                           f"Причина: {data['cause']}")
+        run_time1 = datetime.now() + timedelta(hours=4)
+        run_time2 = datetime.now() + timedelta(hours=12)
+        run_time3 = datetime.now() + timedelta(hours=24)
+        run_time4 = datetime.now() + timedelta(hours=72)
+        run_time5 = datetime.now() + timedelta(hours=168)
+
+        # task_uuid = str(uuid.uuid4())
+        if data['priority'] == '1':
+            job = scheduler.add_job(prosrochen, "date", run_date=run_time1,
+                                    args=[data['number'], data['priority'], data['category'], data['desc']],
+                                    max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time1,
+                            [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '2':
+            job = scheduler.add_job(prosrochen, "date", run_date=run_time2,
+                                    args=[data['number'], data['priority'], data['category'], data['desc']],
+                                    max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time2,
+                            [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '3':
+            job = scheduler.add_job(prosrochen, "date", run_date=run_time3,
+                                    args=[data['number'], data['priority'], data['category'], data['desc']],
+                                    max_instances=1)
+            await print_all_jobs()
+            save_task_to_db(job.id, 'prosrochen', run_time3,
+                            [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '4':
+            job = scheduler.add_job(prosrochen, "date", run_date=run_time4,
+                                    args=[data['number'], data['priority'], data['category'], data['desc']],
+                                    max_instances=1)
+            save_task_to_db(job.id, 'prosrochen', run_time4,
+                            [data['number'], data['priority'], data['category'], data['desc']])
+        if data['priority'] == '5':
+            job = scheduler.add_job(prosrochen, "date", run_date=run_time5,
+                                    args=[data['number'], data['priority'], data['category'], data['desc']],
+                                    max_instances=1)
+            save_task_to_db(job.id, 'prosrochen', run_time5,
+                            [data['number'], data['priority'], data['category'], data['desc']])
+        await bot.send_message(chat_id=message.chat.id,
+                               text=f"Инцидент открыт",
+                               reply_markup=create_incident_kb())
+        await ProfileStatesGroup.main_menu.set()
+
 @dp.callback_query_handler(state=ProfileStatesGroup.category_of_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == '#Качество_связи_и_интернета' or callback_query.data == '#app_Beeline_Uzbekistan' or callback_query.data == '#Внутренне_ПО' or callback_query.data == '#База_знаний' or callback_query.data == '#Интерфейсы_CPA' or callback_query.data == '#Beepul' or callback_query.data == '#Beeline_TV' or callback_query.data == '#Beeline_Music' or callback_query.data == '#Дозвон_в_КЦ' or callback_query.data == '#Акции' or callback_query.data == '#CVM_активности' or callback_query.data == '#USSD_запросы' or callback_query.data == '#SMS' or callback_query.data == '#Корпоративный_сайт' or callback_query.data == '#Balance' or callback_query.data == '#Яндекс_Плюс' or callback_query.data == '#Телеграмм' or callback_query.data == '#Beeline_Visa' or callback_query.data == '#OQ_mobile':
@@ -572,3 +699,4 @@ if __name__ == '__main__':
         host=WEBAPP_HOST,
         port=WEBAPP_PORT,
     )
+
