@@ -542,13 +542,12 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                 save_task_to_db(job.id, 'prosrochen', run_time5,
                                 [data['number'], data['priority'], data['category'], data['desc']])
         await callback_query.message.delete()
-        await bot.send_message(chat_id=callback_query.message.chat.id,
-                               text=callback_query.data, reply_markup=create_incident_kb())
         await bot.send_message(callback_query.message.chat.id,
-                               f"{data['category']}\n"
+                               text=f"{data['category']}\n"
                                f"🆕ОТКРЫТ Инц. №{data['number']}\n"
                                f"Приоритет: {data['priority']}\n"
-                               f"Описание: {data['desc']}\n")
+                               f"Описание: {data['desc']}\n",
+                               reply_markup=create_incident_kb())
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
         async with state.proxy() as data:
