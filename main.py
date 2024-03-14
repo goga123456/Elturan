@@ -123,8 +123,8 @@ async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
     await bot.send_message(CHANNEL_ID, f"{category}\n"
                                        f"‼️ПРОСРОЧЕН SLA Инц. №{number}\n"
-                                       f"Приоритет: {priority}\n"
-                                       f"Описание: {desc}\n")
+                                       f"{desc}\n"
+                                       f"Приоритет: {priority}\n")
     await delete_task(number)
 
 async def incidents() -> InlineKeyboardMarkup:
@@ -245,8 +245,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         else:  
             await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                                f"🆕ОТКРЫТ Инц. №{date[1]}\n"
-                                               f"Приоритет: {date[4]}\n"
-                                               f"Описание: {data['desc']}\n")
+                                               f"{data['desc']}\n"
+                                               f"Приоритет: {date[4]}\n")
             await baza.update_description(data['desc'], date[1])
             await bot.send_message(chat_id=message.from_user.id,
                            text="Описание изменено")
@@ -277,8 +277,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         dates = await baza.select_closed_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
                                            f"🆕ОТКРЫТ Инц. №{dates[1]}\n"
-                                           f"Приоритет: {dates[4]}\n"
-                                           f"Описание: {dates[3]}\n")
+                                           f"{dates[3]}\n"
+                                           f"Приоритет: {dates[4]}\n")
         await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт', datetime.now())
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
@@ -344,9 +344,9 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         date = await baza.select_incident(data['choose'])
         await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                            f"✅ЗАКРЫТ Инц. №{date[1]}\n"
+                                           f"{date[3]}\n"
                                            f"Приоритет: {date[4]}\n"
-                                           f"Описание: {date[3]}\n"
-                                           f"Причина: {data['solve']}")
+                                           f"{data['solve']}")
         await bot.send_message(chat_id=message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт")
         await baza.delete_incident(data['choose'])
@@ -377,8 +377,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             await callback_query.message.delete()
             await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                                f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
-                                               f"Приоритет: {date[4]}\n"
-                                               f"Описание: {date[3]}\n")
+                                               f"{date[3]}\n"
+                                               f"Приоритет: {date[4]}\n")
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
             await delete_task(date[1])
@@ -406,8 +406,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
         await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
                                                 f"🆕ОТКРЫТ Инц. №{date[1]}\n"
-                                                f"Приоритет изменён на {date[4]}\n"
-                                                f"Описание: {date[3]}\n")
+                                                f"{date[3]}\n"
+                                                f"Приоритет изменён на {date[4]}\n")
         
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
@@ -499,8 +499,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                               datetime.now())
             await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
                                                f"🆕ОТКРЫТ Инц. №{data['number']}\n"
-                                               f"Приоритет: {data['priority']}\n"
-                                               f"Описание: {data['desc']}\n")
+                                               f"{data['desc']}\n"
+                                               f"Приоритет: {data['priority']}\n")
             run_time1 = datetime.now() + timedelta(hours=4)
             run_time2 = datetime.now() + timedelta(hours=12)
             run_time3 = datetime.now() + timedelta(hours=24)
@@ -545,8 +545,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(callback_query.message.chat.id,
                                text=f"{data['category']}\n"
                                f"🆕ОТКРЫТ Инц. №{data['number']}\n"
-                               f"Приоритет: {data['priority']}\n"
-                               f"Описание: {data['desc']}\n",
+                               f"{data['desc']}\n"
+                               f"Приоритет: {data['priority']}\n",
                                reply_markup=create_incident_kb())
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
@@ -566,9 +566,9 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           datetime.now())
         await bot.send_message(CHANNEL_ID, f"{data['category']}\n"
                                            f"🆕ОТКРЫТ Инц. №{data['number']}\n"
+                                           f"{data['desc']}\n"
                                            f"Приоритет: {data['priority']}\n"
-                                           f"Описание: {data['desc']}\n"
-                                           f"Причина: {data['cause']}")
+                                           f"{data['cause']}")
         run_time1 = datetime.now() + timedelta(hours=4)
         run_time2 = datetime.now() + timedelta(hours=12)
         run_time3 = datetime.now() + timedelta(hours=24)
