@@ -242,12 +242,19 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         if len(data['desc'])>2000:
             await bot.send_message(chat_id=message.from_user.id,
                                    text="Слишком большое количество символов")  
-        else:  
-            await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+        else:
+            if date[7] is not None:
+                await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                                f"🆕ОТКРЫТ Инц. №{date[1]}\n"
                                                f"{data['desc']}\n"
                                                f"Приоритет: {date[4]}\n"
                                                f"{date[7]}")
+            else:
+                await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+                                               f"🆕ОТКРЫТ Инц. №{date[1]}\n"
+                                               f"{data['desc']}\n"
+                                               f"Приоритет: {date[4]}\n")
+            
             await baza.update_description(data['desc'], date[1])
             await bot.send_message(chat_id=message.from_user.id,
                            text="Описание изменено")
@@ -377,11 +384,17 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                    text=f"Статус инцидента номер {data['choose']} изменён на 'Просрочен SLA'")
             date = await baza.select_incident(data['choose'])
             await callback_query.message.delete()
-            await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+            if date[7] is not None:
+                await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
+                                                   f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
+                                                   f"{date[3]}\n"
+                                                   f"Приоритет: {date[4]}\n"
+                                                   f"{date[7]}")
+            else:
+                await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
                                                f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
                                                f"{date[3]}\n"
-                                               f"Приоритет: {date[4]}\n"
-                                               f"{date[7]}")
+                                               f"Приоритет: {date[4]}\n")
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
             await delete_task(date[1])
@@ -406,13 +419,18 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
         await bot.send_message(callback_query.message.chat.id, text=f"Приоритет был изменён на {data['priority']}")      
         ex_priority = await baza.select_priority(data['choose'])
         date = await baza.select_incident(data['choose'])
-
-        await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
-                                                f"🆕ОТКРЫТ Инц. №{date[1]}\n"
-                                                f"{date[3]}\n"
-                                                f"Приоритет изменён на {date[4]}\n"
-                                                f"{date[7]}")
-        
+        if date[7] is not None:
+            await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
+                                                    f"🆕ОТКРЫТ Инц. №{date[1]}\n"
+                                                    f"{date[3]}\n"
+                                                    f"Приоритет изменён на {date[4]}\n"
+                                                    f"{date[7]}")
+        else:
+            await bot.send_message(CHANNEL_ID, text=f"{date[2]}\n"
+                                                    f"🆕ОТКРЫТ Инц. №{date[1]}\n"
+                                                    f"{date[3]}\n"
+                                                    f"Приоритет изменён на {date[4]}\n")  
+          
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
               
