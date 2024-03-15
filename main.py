@@ -352,7 +352,6 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                            f"{data['solve']}")
         date = await baza.select_incident(data['choose'])
         await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт', date[6], date[7])      
-        await callback_query.message.delete()
         await print_all_jobs()
         await delete_task_from_schedule(date[1])
         await delete_task(date[1]) 
