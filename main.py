@@ -247,7 +247,7 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                                f"🆕ОТКРЫТ Инц. №{date[1]}\n"
                                                f"{data['desc']}\n"
                                                f"Приоритет: {date[4]}\n"
-                                               f"date[7]")
+                                               f"{date[7]}")
             await baza.update_description(data['desc'], date[1])
             await bot.send_message(chat_id=message.from_user.id,
                            text="Описание изменено")
@@ -280,7 +280,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                            f"🆕ОТКРЫТ Инц. №{dates[1]}\n"
                                            f"{dates[3]}\n"
                                            f"Приоритет: {dates[4]}\n"
-                                           f"dates[7]")
+                                           f"{dates[7]}")
         await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт', datetime.now(), dates[7])
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
@@ -381,7 +381,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
                                                f"{date[3]}\n"
                                                f"Приоритет: {date[4]}\n"
-                                               f"date[7]")
+                                               f"{date[7]}")
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
             await delete_task(date[1])
@@ -411,7 +411,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                 f"🆕ОТКРЫТ Инц. №{date[1]}\n"
                                                 f"{date[3]}\n"
                                                 f"Приоритет изменён на {date[4]}\n"
-                                                f"date[7]")
+                                                f"{date[7]}")
         
         await delete_task_from_schedule(date[1])
         await delete_task(date[1])
