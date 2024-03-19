@@ -285,12 +285,20 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         dates = await baza.select_closed_incident(data['choose'])
-        await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
+        if date[7] is not None:
+            await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
                                            f"🆕ОТКРЫТ Инц. №{dates[1]}\n"
                                            f"{dates[3]}\n"
                                            f"Приоритет: {dates[4]}\n"
                                            f"{dates[7]}\n\n"
                                            f"@{callback_query.from_user.username}")
+        else:
+            await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
+                                           f"🆕ОТКРЫТ Инц. №{dates[1]}\n"
+                                           f"{dates[3]}\n"
+                                           f"Приоритет: {dates[4]}\n\n"
+                                           f"@{callback_query.from_user.username}")
+        
         await baza.insert(dates[1], dates[2], dates[3], dates[4], 'Открыт', datetime.now(), dates[7])
         await baza.delete_incident_from_deleted(data['choose'])
         await callback_query.message.delete()
@@ -396,10 +404,10 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                    f"@{callback_query.from_user.username}")
             else:
                 await bot.send_message(CHANNEL_ID, f"{date[2]}\n"
-                                               f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
-                                               f"{date[3]}\n"
-                                               f"Приоритет: {date[4]}\n\n"
-                                               f"@{callback_query.from_user.username}")
+                                                   f"‼️ ПРОСРОЧЕН SLA Инц. №{date[1]}\n"
+                                                   f"{date[3]}\n"
+                                                   f"Приоритет: {date[4]}\n\n"
+                                                   f"@{callback_query.from_user.username}")
             await ProfileStatesGroup.main_menu.set()
             await delete_task_from_schedule(date[1])
             await delete_task(date[1])
