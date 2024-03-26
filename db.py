@@ -4,9 +4,13 @@ import os
 class Database:
     def __init__(self):
         self.db_url = os.environ['DATABASE_URL']
+        
 
     async def connect(self):
-        return await asyncpg.connect(dsn=self.db_url, sslmode='require')
+        ssl_params = {
+        'sslmode': 'require'
+        }
+        return await asyncpg.connect(dsn=self.db_url, ssl=ssl_params)
 
 
     async def is_inc_number_unique(self, inc_number):
