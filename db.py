@@ -8,10 +8,10 @@ class Database:
         
 
     async def connect(self):
-        ssl_params = {
-        'sslmode': 'require'
-        }
-        return await asyncpg.connect(dsn=self.db_url, ssl=ssl_params)
+        ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        return await asyncpg.connect(dsn=self.db_url, ssl=ssl_context)
 
 
     async def is_inc_number_unique(self, inc_number):
