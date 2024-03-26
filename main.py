@@ -43,15 +43,15 @@ scheduler = AsyncIOScheduler()
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
 cursor = conn.cursor()
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS scheduled_tasks (
-        id UUID PRIMARY KEY,
-        task_type text,
-        run_date timestamp,
-        args json
-    )
-""")
-conn.commit()
+#cursor.execute("""
+#    CREATE TABLE IF NOT EXISTS scheduled_tasks (
+#        id UUID PRIMARY KEY,
+#        task_type text,
+#        run_date timestamp,
+#        args json
+#    )
+#""")
+#conn.commit()
 
 def save_task_to_db(id, task_type, run_date, args):
     try:
