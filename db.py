@@ -1,5 +1,6 @@
 import asyncpg
 import os
+import ssl
 
 class Database:
     def __init__(self):
