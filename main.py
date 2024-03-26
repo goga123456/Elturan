@@ -55,7 +55,7 @@ conn.commit()
 
 async def save_task_to_db(id, task_type, run_date, args):
     try:
-        if conn is None or conn.is_closed():
+        if conn is None or conn.closed:
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         # Convert args to a JSON-formatted string
@@ -79,7 +79,7 @@ async def print_all_jobs():
       
 async def delete_task(task_id):   
     try:
-        if conn is None or conn.is_closed():
+        if conn is None or conn.closed:
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         async with conn.transaction():
@@ -114,7 +114,7 @@ async def delete_task_from_schedule(task_id):
 
 async def delete_task_from_schedule(task_id):
     try:
-        if conn is None or conn.is_closed():
+        if conn is None or conn.closed:
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         async with conn.cursor() as cursor:
@@ -140,7 +140,7 @@ async def delete_task_from_schedule(task_id):
 
 async def restore_tasks_from_db():
     try:
-        if conn is None or conn.is_closed():
+        if conn is None or conn.closed:
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         async with conn.cursor() as cursor:
