@@ -53,24 +53,23 @@ cursor.execute("""
 """)
 conn.commit()
 
-def save_task_to_db(id, task_type, run_date, args):
+async def save_task_to_db(id, task_type, run_date, args):
     try:
-        if conn is None or conn.closed != 0:
+        if conn is None or conn.is_closed():
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         # Convert args to a JSON-formatted string
         args_json = json.dumps(args)
         
-        with conn, conn.cursor() as cursor:
-            cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
-                           (id, task_type, run_date, args_json))
-            conn.commit()  # Commit the transaction
+        async with conn.transaction():
+            await conn.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES ($1, $2, $3, $4)",
+                               id, task_type, run_date, args_json)
         
         return id
     except psycopg2.Error as e:
         print("Error saving task to database:", e)
         if conn:
-            conn.rollback()  # Rollback the transaction in case of an error
+            await conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
@@ -80,12 +79,11 @@ async def print_all_jobs():
       
 async def delete_task(task_id):   
     try:
-        if conn is None or conn.closed != 0:
+        if conn is None or conn.is_closed():
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
-        async with conn.cursor() as cursor:
-            await cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-            await conn.commit()
+        async with conn.transaction():
+            await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", task_id)
     except psycopg2.Error as e:
         print("Error deleting task from database:", e)
         if conn:
@@ -116,11 +114,11 @@ async def delete_task_from_schedule(task_id):
 
 async def delete_task_from_schedule(task_id):
     try:
-        if conn is None or conn.closed != 0:
+        if conn is None or conn.is_closed():
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
+            await cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", task_id)
             result = await cursor.fetchone()
             if result:
                 job_id = result[0].replace("-", "")
@@ -142,7 +140,7 @@ async def delete_task_from_schedule(task_id):
 
 async def restore_tasks_from_db():
     try:
-        if conn is None or conn.closed != 0:
+        if conn is None or conn.is_closed():
             raise psycopg2.InterfaceError("Connection to database is closed or None")
         
         async with conn.cursor() as cursor:
