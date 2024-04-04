@@ -7,7 +7,6 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from config import TOKEN_API
 from markups.inline_markups import priority_kb, edit_kb, inc_category_kb, cause_kb
 from markups.reply_markups_start_and_back import *
 from states import ProfileStatesGroup
