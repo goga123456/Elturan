@@ -341,13 +341,6 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(state=ProfileStatesGroup.close_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
-    if message.text == "🔙":
-        await bot.send_message(chat_id=message.from_user.id,
-                               text="Выберите инцидент ,который хотите закрыть",
-                               reply_markup=get_start_kb())
-        await bot.send_message(chat_id=message.from_user.id,
-                               text="Список инцидентов",
-                               reply_markup=await incidents())
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         date = await baza.select_incident(data['choose'])
