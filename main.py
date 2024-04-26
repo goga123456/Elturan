@@ -175,7 +175,7 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
         markup.row(*row)
 
     # Добавляем кнопки "Вперед" и "Назад", если это возможно
-    if start_index > 0:
+    if page > 0:
         markup.row(InlineKeyboardButton("Назад", callback_data=f"closed_page_{page-1}"))
     if end_index < len(incidents_list):
         markup.row(InlineKeyboardButton("Вперед", callback_data=f"closed_page_{page+1}"))
