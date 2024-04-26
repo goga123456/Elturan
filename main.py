@@ -39,9 +39,9 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 # Подключение к базе данных PostgreSQL
-DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
-cursor = conn.cursor()
+#DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
+#conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
+#cursor = conn.cursor()
 #cursor.execute("""
 #    CREATE TABLE IF NOT EXISTS scheduled_tasks (
 #        id UUID PRIMARY KEY,
@@ -51,7 +51,7 @@ cursor = conn.cursor()
 #    )
 #""")
 #conn.commit()
-
+"""
 def save_task_to_db(id, task_type, run_date, args):
     try:
         # Convert args to a JSON-formatted string
@@ -68,12 +68,13 @@ def save_task_to_db(id, task_type, run_date, args):
         print("Error saving task to database:", e)
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
+"""        
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
     for job in jobs:
         print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
-      
+"""      
 async def delete_task(task_id):   
     with conn, conn.cursor() as cursor:
         cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
@@ -99,8 +100,8 @@ async def delete_task_from_schedule(task_id):
         print(f"Error deleting task {task_id} from schedule:", e)
         conn.rollback()
         raise
-
-
+"""
+"""
 async def restore_tasks_from_db():
     with conn, conn.cursor() as cursor:
         cursor.execute("SELECT * FROM scheduled_tasks")
@@ -116,7 +117,7 @@ async def restore_tasks_from_db():
                scheduled_tasks[task_id] = job
         except Exception as e:
            print(f"Error restoring task {task_id}: {e}")
-
+"""
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
     await bot.send_message(CHANNEL_ID, f"{category}\n"
@@ -312,30 +313,30 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time1, [dates[1], dates[4], dates[2], dates[3]])
         if dates[4] == 2:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time2, [dates[1], dates[4], dates[2], dates[3]])
             
         if dates[4] == 3:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time3, [dates[1], dates[4], dates[2], dates[3]])
             
         if dates[4] == 4:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time4, [dates[1], dates[4], dates[2], dates[3]])
             
         if dates[4] == 5:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                               args=[dates[1], dates[4], dates[2], dates[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time5, [dates[1], dates[4], dates[2], dates[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time5, [dates[1], dates[4], dates[2], dates[3]])
             
     await ProfileStatesGroup.main_menu.set()
 
@@ -366,8 +367,8 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
         date = await baza.select_incident(data['choose'])
         await baza.insert_deleted(date[1], date[2], date[3], date[4], 'Закрыт', date[6], date[7])      
         await print_all_jobs()
-        await delete_task_from_schedule(date[1])
-        await delete_task(date[1]) 
+        await baza.delete_task_from_schedule(date[1])
+        await baza.delete_task(date[1]) 
         await bot.send_message(chat_id=message.chat.id,
                                text=f"Инцидент с номером {data['choose']} закрыт")
         await baza.delete_incident(data['choose'])
@@ -410,8 +411,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                    f"Приоритет: {date[4]}\n\n"
                                                    f"@{callback_query.from_user.username}")
             await ProfileStatesGroup.main_menu.set()
-            await delete_task_from_schedule(date[1])
-            await delete_task(date[1])
+            await baza.delete_task_from_schedule(date[1])
+            await baza.delete_task(date[1])
     if callback_query.data == "change_desc":
         await callback_query.message.delete()
         await bot.send_message(chat_id=callback_query.from_user.id, text="Описание:",
@@ -447,8 +448,8 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                                     f"Приоритет изменён на {date[4]}\n\n"
                                                     f"@{callback_query.from_user.username}")  
           
-        await delete_task_from_schedule(date[1])
-        await delete_task(date[1])
+        await baza.delete_task_from_schedule(date[1])
+        await baza.delete_task(date[1])
               
         created_at = await baza.select_created_date(date[1])   
         difference = datetime.now() - created_at    
@@ -471,27 +472,27 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
             job=scheduler.add_job(prosrochen, "date", run_date=run_time1,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time1, [date[1], date[4], date[2], date[3]])
         if date[4] == 2:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time2,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time2, [date[1], date[4], date[2], date[3]])
         if date[4] == 3:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time3,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time3, [date[1], date[4], date[2], date[3]])
         if date[4] == 4:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time4,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time4, [date[1], date[4], date[2], date[3]])
         if date[4] == 5:
             job=scheduler.add_job(prosrochen, "date", run_date=run_time5,
                               args=[date[1], date[4], date[2], date[3]],
                               max_instances=1) 
-            save_task_to_db(job.id, 'prosrochen', run_time5, [date[1], date[4], date[2], date[3]])
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time5, [date[1], date[4], date[2], date[3]])
         #await callback_query.message.delete()  
         await ProfileStatesGroup.main_menu.set()
     if callback_query.data == 'Back':
@@ -552,33 +553,33 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
                                         args=[data['number'], data['priority'], data['category'], data['desc']],
                                         max_instances=1)
                 await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time1,
+                await baza.save_task_to_db(job.id, 'prosrochen', run_time1,
                                 [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '2':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_time2,
                                         args=[data['number'], data['priority'], data['category'], data['desc']],
                                         max_instances=1)
                 await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time2,
+                await baza.save_task_to_db(job.id, 'prosrochen', run_time2,
                                 [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '3':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_time3,
                                         args=[data['number'], data['priority'], data['category'], data['desc']],
                                         max_instances=1)
                 await print_all_jobs()
-                save_task_to_db(job.id, 'prosrochen', run_time3,
+                await baza.save_task_to_db(job.id, 'prosrochen', run_time3,
                                 [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '4':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_time4,
                                         args=[data['number'], data['priority'], data['category'], data['desc']],
                                         max_instances=1)
-                save_task_to_db(job.id, 'prosrochen', run_time4,
+                await baza.save_task_to_db(job.id, 'prosrochen', run_time4,
                                 [data['number'], data['priority'], data['category'], data['desc']])
             if data['priority'] == '5':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_time5,
                                         args=[data['number'], data['priority'], data['category'], data['desc']],
                                         max_instances=1)
-                save_task_to_db(job.id, 'prosrochen', run_time5,
+                await baza.save_task_to_db(job.id, 'prosrochen', run_time5,
                                 [data['number'], data['priority'], data['category'], data['desc']])
         await callback_query.message.delete()
         await bot.send_message(callback_query.message.chat.id,
@@ -621,33 +622,33 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                                     args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             await print_all_jobs()
-            save_task_to_db(job.id, 'prosrochen', run_time1,
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time1,
                             [data['number'], data['priority'], data['category'], data['desc']])
         if data['priority'] == '2':
             job = scheduler.add_job(prosrochen, "date", run_date=run_time2,
                                     args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             await print_all_jobs()
-            save_task_to_db(job.id, 'prosrochen', run_time2,
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time2,
                             [data['number'], data['priority'], data['category'], data['desc']])
         if data['priority'] == '3':
             job = scheduler.add_job(prosrochen, "date", run_date=run_time3,
                                     args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
             await print_all_jobs()
-            save_task_to_db(job.id, 'prosrochen', run_time3,
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time3,
                             [data['number'], data['priority'], data['category'], data['desc']])
         if data['priority'] == '4':
             job = scheduler.add_job(prosrochen, "date", run_date=run_time4,
                                     args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time4,
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time4,
                             [data['number'], data['priority'], data['category'], data['desc']])
         if data['priority'] == '5':
             job = scheduler.add_job(prosrochen, "date", run_date=run_time5,
                                     args=[data['number'], data['priority'], data['category'], data['desc']],
                                     max_instances=1)
-            save_task_to_db(job.id, 'prosrochen', run_time5,
+            await baza.save_task_to_db(job.id, 'prosrochen', run_time5,
                             [data['number'], data['priority'], data['category'], data['desc']])
         await bot.send_message(chat_id=message.chat.id,
                                text=f"Инцидент открыт",
@@ -680,7 +681,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
 async def on_startup(dispatcher):
     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True, max_connections=100)
     scheduler.start()
-    await restore_tasks_from_db()
+    await baza.restore_tasks_from_db()
 
 async def on_shutdown(dispatcher):
     await bot.delete_webhook()
