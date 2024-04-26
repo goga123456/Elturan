@@ -18,9 +18,12 @@ class Database:
         return await asyncpg.connect(dsn=self.db_url, ssl=ssl_context)
 
     async def is_inc_number_unique(self, inc_number):
-        async with await self.connect() as conn:
+        conn = await self.connect()  # Открываем соединение
+        try:
             result = await conn.fetchrow('SELECT * FROM incidents WHERE inc_number = $1', inc_number)
             return result is None
+        finally:
+            await conn.close()  # Всегда закрываем соединение
 
     async def insert(self, inc_number, inc_category, desc, priority, status, created_at, cause):
         async with await self.connect() as conn:
