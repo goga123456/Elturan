@@ -151,6 +151,9 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.closed_incidents()
 
+    if incidents_list is None:
+        return markup  # Возвращаем пустую разметку
+
     # Определяем количество инцидентов на одной странице
     incidents_per_page = 40
 
