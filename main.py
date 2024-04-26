@@ -39,25 +39,25 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+conn = await asyncpg.connect(DATABASE_URL, ssl='require')
 cursor = conn.cursor()
 
 
-def save_task_to_db(id, task_type, run_date, args):
+async def save_task_to_db(id, task_type, run_date, args):
+    conn = await asyncpg.connect(DATABASE_URL, ssl='require')
     try:
-        args_json = json.dumps(args)     
-        cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
-                       (id, task_type, run_date, args_json))
-        conn.commit()
-    except psycopg2.Error as e:
+        args_json = json.dumps(args)
+        await conn.execute(
+            "INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES ($1, $2, $3, $4)",
+            id, task_type, run_date, args_json
+        )
+        await conn.commit()
+    except asyncpg.PostgresError as e:
         print("Error saving task to database:", e)
-        if conn:
-            conn.rollback()
+        await conn.rollback()
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        await conn.close()
+
     return id
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
@@ -66,47 +66,45 @@ async def print_all_jobs():
         print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
       
 async def delete_task(task_id):   
-    with conn, conn.cursor() as cursor:
-        cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-        conn.commit()
-      
-async def delete_task_from_schedule(task_id):
+    conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
     try:
-        with conn, conn.cursor() as cursor:
-            cursor.execute("SELECT id FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
-            result = cursor.fetchone()
-            if result:
-                job_id = result[0].replace("-", "")
-                print(f"Trying to delete job with ID: {job_id}")
-                print(job_id)
-                print(scheduler.get_job(job_id))
-                # Проверка, существует ли задача перед удалением
-                if scheduler.get_job(str(job_id)):
-                    scheduler.remove_job(job_id)
-                    print(f"Job {job_id} removed successfully")
-                else:
-                    print(f"No job with ID {job_id} was found in the scheduler")
-    except psycopg2.Error as e:
-        print(f"Error deleting task {task_id} from schedule:", e)
-        conn.rollback()
-        raise
+        await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", task_id)
+        await conn.commit()
+    finally:
+        await conn.close()
 
+async def delete_task_from_schedule(task_id):
+    conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
+    try:
+        result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", task_id)
+        if result:
+            job_id = str(result['id']).replace("-", "")
+            print(f"Trying to delete job with ID: {job_id}")
+            if scheduler.get_job(str(job_id)):
+                scheduler.remove_job(job_id)
+                print(f"Job {job_id} removed successfully")
+            else:
+                print(f"No job with ID {job_id} was found in the scheduler")
+    except asyncpg.PostgresError as e:
+        print(f"Error deleting task {task_id} from schedule:", e)
+        await conn.execute('ROLLBACK')
+        raise
+    finally:
+        await conn.close()
 
 async def restore_tasks_from_db():
-    with conn, conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM scheduled_tasks")
-        tasks = cursor.fetchall()
-    job = None
-
-    for task in tasks:
-        task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
-
-        try:
-           if task_type == 'prosrochen':
-               job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
-               scheduled_tasks[task_id] = job
-        except Exception as e:
-           print(f"Error restoring task {task_id}: {e}")
+    conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
+    try:
+        tasks = await conn.fetch("SELECT * FROM scheduled_tasks")
+        for task in tasks:
+            task_id, task_type, run_date, args = task['id'], task['task_type'], task['run_date'], task['args']
+            if task_type == 'prosrochen':
+                job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+                scheduled_tasks[task_id] = job
+    except asyncpg.PostgresError as e:
+        print(f"Error restoring task {task_id}: {e}")
+    finally:
+        await conn.close()
 
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
