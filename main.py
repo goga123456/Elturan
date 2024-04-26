@@ -97,7 +97,6 @@ async def restore_tasks_from_db():
         job = None
         for task in tasks:
             task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
-            args = json.loads(args_json)
             try:
                 if task_type == 'prosrochen':
                     job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
