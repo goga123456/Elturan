@@ -45,34 +45,33 @@ async def save_task_to_db(id, task_type, run_date, args):
     conn = await asyncpg.connect(DATABASE_URL, ssl='require')
     try:
         args_json = json.dumps(args)
-        await conn.execute(
-            "INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES ($1, $2, $3, $4)",
-            id, task_type, run_date, args_json
-        )
-        await conn.commit()
+        async with conn.transaction():  # Автоматический commit или rollback
+            await conn.execute(
+                "INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES ($1, $2, $3, $4)",
+                id, task_type, run_date, args_json
+            )
     except asyncpg.PostgresError as e:
         print("Error saving task to database:", e)
-        await conn.rollback()
     finally:
         await conn.close()
-
     return id
+  
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
     for job in jobs:
         print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
       
-async def delete_task(task_id):   
-    conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
+async def delete_task(task_id):
+    conn = await asyncpg.connect(DATABASE_URL, ssl='require')
     try:
-        await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", task_id)
-        await conn.commit()
+        async with conn.transaction():
+            await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", task_id)
     finally:
         await conn.close()
 
 async def delete_task_from_schedule(task_id):
-    conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
+    conn = await asyncpg.connect(DATABASE_URL, ssl='require')
     try:
         result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", task_id)
         if result:
