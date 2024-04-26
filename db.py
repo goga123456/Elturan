@@ -3,7 +3,7 @@ import os
 import ssl
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-scheduled_tasks = {}
+
 scheduler = AsyncIOScheduler()
 
 class Database:
