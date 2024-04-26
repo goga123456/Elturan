@@ -121,18 +121,21 @@ async def incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.incidents()
 
-    # Определяем количество инцидентов на одной странице
-    incidents_per_page = 40
+    # Определяем максимальное количество кнопок на одной странице
+    buttons_per_page = 30
 
-    # Вычисляем индексы начала и конца текущей страницы
-    start_index = page * incidents_per_page
-    end_index = min((page + 1) * incidents_per_page, len(incidents_list))
+    # Определяем количество кнопок на одной строке
+    buttons_per_row = 3
+
+    # Определяем индексы начала и конца текущей страницы
+    start_index = page * buttons_per_page
+    end_index = min((page + 1) * buttons_per_page, len(incidents_list))
 
     # Создаем кнопки для текущей страницы
-    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
-    
-    # Делим кнопки на ряды по три кнопки в каждом
-    rows = [buttons[i:i+3] for i in range(0, len(buttons), 3)]
+    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[start_index:end_index]]
+
+    # Делим кнопки на ряды по buttons_per_row кнопок в каждом
+    rows = [buttons[i:i+buttons_per_row] for i in range(0, len(buttons), buttons_per_row)]
 
     # Добавляем ряды в разметку
     for row in rows:
@@ -151,21 +154,21 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.closed_incidents()
 
-    if incidents_list is None:
-        return markup  # Возвращаем пустую разметку
+    # Определяем максимальное количество кнопок на одной странице
+    buttons_per_page = 30
 
-    # Определяем количество инцидентов на одной странице
-    incidents_per_page = 40
+    # Определяем количество кнопок на одной строке
+    buttons_per_row = 3
 
-    # Вычисляем индексы начала и конца текущей страницы
-    start_index = page * incidents_per_page
-    end_index = min((page + 1) * incidents_per_page, len(incidents_list))
+    # Определяем индексы начала и конца текущей страницы
+    start_index = page * buttons_per_page
+    end_index = min((page + 1) * buttons_per_page, len(incidents_list))
 
     # Создаем кнопки для текущей страницы
-    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'closed_incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
-    
-    # Делим кнопки на ряды по три кнопки в каждом
-    rows = [buttons[i:i+3] for i in range(0, len(buttons), 3)]
+    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[start_index:end_index]]
+
+    # Делим кнопки на ряды по buttons_per_row кнопок в каждом
+    rows = [buttons[i:i+buttons_per_row] for i in range(0, len(buttons), buttons_per_row)]
 
     # Добавляем ряды в разметку
     for row in rows:
