@@ -2,6 +2,9 @@ import asyncpg
 import os
 import ssl
 
+scheduled_tasks = {}
+scheduler = AsyncIOScheduler()
+
 class Database:
     def __init__(self):
         self.db_url = os.environ['DATABASE_URL']
