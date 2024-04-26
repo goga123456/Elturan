@@ -117,36 +117,52 @@ async def prosrochen(number, priority, category, desc):
                                        f"Приоритет: {priority}\n\n")
     await delete_task(number)
 
-async def incidents() -> InlineKeyboardMarkup:
+async def incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.incidents()
 
-    # Итерируем по списку инцидентов, создавая новый ряд каждые два элемента
-    for i in range(0, len(incidents_list), 2):
-        # Создаем кнопки для текущего ряда
-        buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[i:i+2]]
-        
-        # Добавляем ряд в разметку
-        markup.row(*buttons)
+    # Определяем количество инцидентов на одной странице
+    incidents_per_page = 10
+
+    # Вычисляем индексы начала и конца текущей страницы
+    start_index = page * incidents_per_page
+    end_index = min((page + 1) * incidents_per_page, len(incidents_list))
+
+    # Создаем кнопки для текущей страницы
+    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
+    markup.row(*buttons)
+
+    # Добавляем кнопки "Вперед" и "Назад", если это возможно
+    if start_index > 0:
+        markup.row(InlineKeyboardButton("Назад", callback_data=f"page_{page-1}"))
+    if end_index < len(incidents_list):
+        markup.row(InlineKeyboardButton("Вперед", callback_data=f"page_{page+1}"))
 
     return markup
 
 
-
-async def closed_incidents() -> InlineKeyboardMarkup:
+async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.closed_incidents()
 
-    # Итерируем по списку инцидентов, создавая новый ряд каждые два элемента
-    for i in range(0, len(incidents_list), 2):
-        # Создаем кнопки для текущего ряда
-        buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[i:i+2]]
-        
-        # Добавляем ряд в разметку
-        markup.row(*buttons)
+    # Определяем количество инцидентов на одной странице
+    incidents_per_page = 10
+
+    # Вычисляем индексы начала и конца текущей страницы
+    start_index = page * incidents_per_page
+    end_index = min((page + 1) * incidents_per_page, len(incidents_list))
+
+    # Создаем кнопки для текущей страницы
+    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'closed_incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
+    markup.row(*buttons)
+
+    # Добавляем кнопки "Вперед" и "Назад", если это возможно
+    if start_index > 0:
+        markup.row(InlineKeyboardButton("Назад", callback_data=f"closed_page_{page-1}"))
+    if end_index < len(incidents_list):
+        markup.row(InlineKeyboardButton("Вперед", callback_data=f"closed_page_{page+1}"))
 
     return markup
-
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
