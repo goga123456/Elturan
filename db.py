@@ -98,16 +98,20 @@ class Database:
             await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))
 
     async def restore_tasks_from_db(self):
-        async with await self.connect() as conn:
+        conn = await self.connect()
+        try:
             records = await conn.fetch("SELECT * FROM scheduled_tasks")
-        for task in records:
-            task_id, task_type, run_date, args = task['id'], task['task_type'], task['run_date'], task['args']
-            try:
-                if task_type == 'prosrochen':
-                    job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
-                    scheduled_tasks[task_id] = job
-            except Exception as e:
-                print(f"Error restoring task {task_id}: {e}")
+        
+            for task in records:
+                task_id, task_type, run_date, args = task['id'], task['task_type'], task['run_date'], task['args']
+                try:
+                    if task_type == 'prosrochen':
+                        job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+                        scheduled_tasks[task_id] = job
+                except Exception as e:
+                    print(f"Error restoring task {task_id}: {e}")
+        finally:
+            await conn.close()            
 
     async def delete_task_from_schedule(self, task_id):
         async with await self.connect() as conn:
