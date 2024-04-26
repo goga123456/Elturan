@@ -133,6 +133,11 @@ class Database:
         finally:
             await conn.close()
     async def update_description(self, desc, inc_number):
-        async with await self.connect() as conn:
+        conn = await self.connect()
+        try:
             await conn.execute('UPDATE incidents SET "desc" = $1 WHERE inc_number = $2', desc, inc_number)
+        finally:
+            await conn.close()
+        
+            
 
