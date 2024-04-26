@@ -124,7 +124,7 @@ class Database:
         pool = await self.connect()
         async with pool.acquire() as conn:
             # Удаление лишней запятой и скобок вокруг task_id
-            result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))
+            result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", str(task_id))
             if result:
                 job_id = str(result['id']).replace("-", "")
                 print(f"Trying to delete job with ID: {job_id}")
@@ -134,6 +134,7 @@ class Database:
                     print(f"Job {job_id} removed successfully")
                 else:
                     print(f"No job with ID {job_id} was found in the scheduler")
+                    print(f"Type of task_id: {type(task_id)}, Value of task_id: {task_id}")
             else:
                 print(f"No task with args {task_id} found in database")
 
