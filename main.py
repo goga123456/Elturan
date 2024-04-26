@@ -122,7 +122,7 @@ async def incidents(page=0) -> InlineKeyboardMarkup:
     incidents_list = await baza.incidents()
 
     # Определяем количество инцидентов на одной странице
-    incidents_per_page = 10
+    incidents_per_page = 40
 
     # Вычисляем индексы начала и конца текущей страницы
     start_index = page * incidents_per_page
@@ -130,7 +130,13 @@ async def incidents(page=0) -> InlineKeyboardMarkup:
 
     # Создаем кнопки для текущей страницы
     buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
-    markup.row(*buttons)
+    
+    # Делим кнопки на ряды по три кнопки в каждом
+    rows = [buttons[i:i+3] for i in range(0, len(buttons), 3)]
+
+    # Добавляем ряды в разметку
+    for row in rows:
+        markup.row(*row)
 
     # Добавляем кнопки "Вперед" и "Назад", если это возможно
     if start_index > 0:
@@ -146,7 +152,7 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     incidents_list = await baza.closed_incidents()
 
     # Определяем количество инцидентов на одной странице
-    incidents_per_page = 10
+    incidents_per_page = 40
 
     # Вычисляем индексы начала и конца текущей страницы
     start_index = page * incidents_per_page
@@ -154,7 +160,13 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
 
     # Создаем кнопки для текущей страницы
     buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'closed_incident_{incident[0]}') for incident in incidents_list[start_index:end_index]]
-    markup.row(*buttons)
+    
+    # Делим кнопки на ряды по три кнопки в каждом
+    rows = [buttons[i:i+3] for i in range(0, len(buttons), 3)]
+
+    # Добавляем ряды в разметку
+    for row in rows:
+        markup.row(*row)
 
     # Добавляем кнопки "Вперед" и "Назад", если это возможно
     if start_index > 0:
