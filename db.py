@@ -123,12 +123,12 @@ class Database:
     async def delete_task_from_schedule(self, task_id):
         pool = await self.connect()
         async with pool.acquire() as conn:
-            # Здесь исправлено: передаем task_id напрямую, а не в виде кортежа
+            # Удаление лишней запятой и скобок вокруг task_id
             result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", task_id)
             if result:
                 job_id = result['id'].replace("-", "")
                 print(f"Trying to delete job with ID: {job_id}")
-                # Убедитесь, что scheduler правильно определен и доступен в этом контексте
+                # Убедитесь, что переменная scheduler правильно определена и доступна
                 if scheduler.get_job(str(job_id)):
                     scheduler.remove_job(job_id)
                     print(f"Job {job_id} removed successfully")
