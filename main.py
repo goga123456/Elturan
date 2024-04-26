@@ -99,8 +99,8 @@ async def restore_tasks_from_db():
             task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
             try:
                 if task_type == 'prosrochen':
-                job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
-                scheduled_tasks[task_id] = job
+                    job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+                    scheduled_tasks[task_id] = job
             except Exception as e:
                 print(f"Error restoring task {task_id}: {e}")
     except asyncpg.PostgresError as e:
