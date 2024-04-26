@@ -82,3 +82,44 @@ class Database:
         async with await self.connect() as conn:
             await conn.execute('UPDATE incidents SET "desc" = $1 WHERE inc_number = $2', desc, inc_number)
 
+    async def save_task_to_db(self, id, task_type, run_date, args):
+        async with await self.connect() as conn:
+            try:
+                args_json = json.dumps(args)
+                await conn.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES ($1, $2, $3, $4)",
+                                   id, task_type, run_date, args_json)
+                return id
+            except Exception as e:
+                print("Error saving task to database:", e)
+                raise
+
+    async def delete_task(self, task_id):
+        async with await self.connect() as conn:
+            await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))
+
+    async def restore_tasks_from_db(self):
+        async with await self.connect() as conn:
+            records = await conn.fetch("SELECT * FROM scheduled_tasks")
+        for task in records:
+            task_id, task_type, run_date, args = task['id'], task['task_type'], task['run_date'], task['args']
+            try:
+                if task_type == 'prosrochen':
+                    job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
+                    scheduled_tasks[task_id] = job
+            except Exception as e:
+                print(f"Error restoring task {task_id}: {e}")
+
+    async def delete_task_from_schedule(self, task_id):
+        async with await self.connect() as conn:
+            result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))
+            if result:
+                job_id = result['id'].replace("-", "")
+                print(f"Trying to delete job with ID: {job_id}")
+                if scheduler.get_job(str(job_id)):
+                    scheduler.remove_job(job_id)
+                    print(f"Job {job_id} removed successfully")
+                else:
+                    print(f"No job with ID {job_id} was found in the scheduler")
+            else:
+                print(f"No task with args {task_id} found in database")
+
