@@ -93,17 +93,21 @@ async def delete_task_from_schedule(task_id):
 async def restore_tasks_from_db():
     conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
     try:
-        tasks = await conn.fetch("SELECT * FROM scheduled_tasks")
+        tasks = await conn.fetchall("SELECT * FROM scheduled_tasks")
+        job = None
         for task in tasks:
-            task_id, task_type, run_date, args = task['id'], task['task_type'], task['run_date'], task['args']
-            args = json.loads(args_json)
-            if task_type == 'prosrochen':
+            task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
+            try:
+                if task_type == 'prosrochen':
                 job = scheduler.add_job(prosrochen, "date", run_date=run_date, args=args, max_instances=1)
                 scheduled_tasks[task_id] = job
+            except Exception as e:
+                print(f"Error restoring task {task_id}: {e}")
     except asyncpg.PostgresError as e:
         print(f"Error restoring task {task_id}: {e}")
     finally:
         await conn.close()
+
 
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
