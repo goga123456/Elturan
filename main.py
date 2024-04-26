@@ -45,17 +45,19 @@ cursor = conn.cursor()
 
 def save_task_to_db(id, task_type, run_date, args):
     try:
-        args_json = json.dumps(args)
+        args_json = json.dumps(args)     
         cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
                        (id, task_type, run_date, args_json))
-        conn.commit()       
+        conn.commit()
     except psycopg2.Error as e:
         print("Error saving task to database:", e)
-        conn.rollback()
-        raise
+        if conn:
+            conn.rollback()
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
     return id
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
