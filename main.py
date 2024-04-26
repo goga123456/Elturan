@@ -38,20 +38,11 @@ WEBAPP_PORT = os.getenv('PORT', default=8000)
 baza = Database()
 scheduler = AsyncIOScheduler()
 
-# Подключение к базе данных PostgreSQL
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
 cursor = conn.cursor()
-#cursor.execute("""
-#    CREATE TABLE IF NOT EXISTS scheduled_tasks (
-#        id UUID PRIMARY KEY,
-#        task_type text,
-#        run_date timestamp,
-#        args json
-#    )
-#""")
-#conn.commit()
-"""
+
+
 def save_task_to_db(id, task_type, run_date, args):
     try:
         # Convert args to a JSON-formatted string
@@ -68,13 +59,12 @@ def save_task_to_db(id, task_type, run_date, args):
         print("Error saving task to database:", e)
         conn.rollback()  # Rollback the transaction in case of an error
         raise  # Re-raise the exception for further handling
-"""        
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
     for job in jobs:
         print(f"ID: {job.id}, Имя функции: {job.func.__name__}, Следующий запуск: {job.next_run_time}")    
-"""      
+      
 async def delete_task(task_id):   
     with conn, conn.cursor() as cursor:
         cursor.execute("DELETE FROM scheduled_tasks WHERE args->>0 = %s", (task_id,))
@@ -100,7 +90,7 @@ async def delete_task_from_schedule(task_id):
         print(f"Error deleting task {task_id} from schedule:", e)
         conn.rollback()
         raise
-"""
+
 
 async def restore_tasks_from_db():
     with conn, conn.cursor() as cursor:
