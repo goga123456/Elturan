@@ -39,8 +39,6 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
-conn = await asyncpg.connect(DATABASE_URL, ssl='require')
-cursor = conn.cursor()
 
 
 async def save_task_to_db(id, task_type, run_date, args):
