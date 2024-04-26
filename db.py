@@ -121,17 +121,19 @@ class Database:
             await conn.execute("DELETE FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))     
 
     async def delete_task_from_schedule(self, task_id):
-        pool = await self.connect()
-        async with pool.acquire() as conn:
-            result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", (task_id,))
-            if result:
-                job_id = result['id'].replace("-", "")
-                print(f"Trying to delete job with ID: {job_id}")
-                if scheduler.get_job(str(job_id)):
-                    scheduler.remove_job(job_id)
-                    print(f"Job {job_id} removed successfully")
-                else:
-                    print(f"No job with ID {job_id} was found in the scheduler")
+    pool = await self.connect()
+    async with pool.acquire() as conn:
+        # Здесь исправлено: передаем task_id напрямую, а не в виде кортежа
+        result = await conn.fetchrow("SELECT id FROM scheduled_tasks WHERE args->>0 = $1", task_id)
+        if result:
+            job_id = result['id'].replace("-", "")
+            print(f"Trying to delete job with ID: {job_id}")
+            # Убедитесь, что scheduler правильно определен и доступен в этом контексте
+            if scheduler.get_job(str(job_id)):
+                scheduler.remove_job(job_id)
+                print(f"Job {job_id} removed successfully")
             else:
-                print(f"No task with args {task_id} found in database")
+                print(f"No job with ID {job_id} was found in the scheduler")
+        else:
+            print(f"No task with args {task_id} found in database")
 
