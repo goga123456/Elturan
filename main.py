@@ -39,9 +39,9 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 # Подключение к базе данных PostgreSQL
-#DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
-#conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
-#cursor = conn.cursor()
+DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
+cursor = conn.cursor()
 #cursor.execute("""
 #    CREATE TABLE IF NOT EXISTS scheduled_tasks (
 #        id UUID PRIMARY KEY,
@@ -101,7 +101,7 @@ async def delete_task_from_schedule(task_id):
         conn.rollback()
         raise
 """
-"""
+
 async def restore_tasks_from_db():
     with conn, conn.cursor() as cursor:
         cursor.execute("SELECT * FROM scheduled_tasks")
@@ -117,7 +117,7 @@ async def restore_tasks_from_db():
                scheduled_tasks[task_id] = job
         except Exception as e:
            print(f"Error restoring task {task_id}: {e}")
-"""
+
 async def prosrochen(number, priority, category, desc):
     await baza.update_status(status="Просрочен SLA", inc_number=number)
     await bot.send_message(CHANNEL_ID, f"{category}\n"
