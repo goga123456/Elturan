@@ -93,7 +93,7 @@ async def delete_task_from_schedule(task_id):
 async def restore_tasks_from_db():
     conn = await asyncpg.connect(os.environ.get('DATABASE_URL'), ssl='require')
     try:
-        tasks = await conn.fetchall("SELECT * FROM scheduled_tasks")
+        tasks = await conn.fetch("SELECT * FROM scheduled_tasks")
         job = None
         for task in tasks:
             task_id, task_type, run_date, args = task[0], task[1], task[2], task[3]
