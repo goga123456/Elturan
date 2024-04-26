@@ -39,26 +39,24 @@ baza = Database()
 scheduler = AsyncIOScheduler()
 
 DATABASE_URL = os.environ.get('DATABASE_URL')  # Use environment variable for security
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')  # Add sslmode for secure connection
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
 
 
 def save_task_to_db(id, task_type, run_date, args):
     try:
-        # Convert args to a JSON-formatted string
         args_json = json.dumps(args)
-        
-        with conn, conn.cursor() as cursor:
-            cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
-                           (id, task_type, run_date, args_json))
-            #id = cursor.fetchone()[0]
-            conn.commit()  # Commit the transaction
-        
-        return id
+        cursor.execute("INSERT INTO scheduled_tasks (id, task_type, run_date, args) VALUES (%s, %s, %s, %s)",
+                       (id, task_type, run_date, args_json))
+        conn.commit()       
     except psycopg2.Error as e:
         print("Error saving task to database:", e)
-        conn.rollback()  # Rollback the transaction in case of an error
-        raise  # Re-raise the exception for further handling
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+    return id
 async def print_all_jobs():
     jobs = scheduler.get_jobs()
     print("Запланированные задачи:")
