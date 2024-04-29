@@ -145,8 +145,10 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     end_index = min((page + 1) * incidents_per_page, len(incidents_list))
 
     # Создаем кнопки для текущей страницы
-    buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[start_index:end_index]]
-    markup.row(*buttons)
+    current_page_incidents = incidents_list[start_index:end_index]
+    for i in range(0, len(current_page_incidents), 3):
+        buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in current_page_incidents[i:i+3]]
+        markup.row(*buttons)
 
     # Добавляем кнопки "Вперед" и "Назад", если это возможно
     if start_index > 0:
