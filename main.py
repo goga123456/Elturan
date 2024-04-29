@@ -137,33 +137,25 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     markup = InlineKeyboardMarkup()
     incidents_list = await baza.closed_incidents()
 
-    # Определяем максимальное количество кнопок на одной странице
-    buttons_per_page = 30
+    # Количество инцидентов на одной странице
+    incidents_per_page = 6
 
-    # Определяем количество кнопок на одной строке
-    buttons_per_row = 3
-
-    # Определяем индексы начала и конца текущей страницы
-    start_index = page * buttons_per_page
-    end_index = min((page + 1) * buttons_per_page, len(incidents_list))
+    # Вычисляем индексы начала и конца текущей страницы
+    start_index = page * incidents_per_page
+    end_index = min((page + 1) * incidents_per_page, len(incidents_list))
 
     # Создаем кнопки для текущей страницы
     buttons = [InlineKeyboardButton(f'{incident[0]}', callback_data=f'{incident[0]}') for incident in incidents_list[start_index:end_index]]
-
-    # Делим кнопки на ряды по buttons_per_row кнопок в каждом
-    rows = [buttons[i:i+buttons_per_row] for i in range(0, len(buttons), buttons_per_row)]
-
-    # Добавляем ряды в разметку
-    for row in rows:
-        markup.row(*row)
+    markup.row(*buttons)
 
     # Добавляем кнопки "Вперед" и "Назад", если это возможно
-    if page > 0:
+    if start_index > 0:
         markup.row(InlineKeyboardButton("Назад", callback_data=f"closed_page_{page-1}"))
     if end_index < len(incidents_list):
         markup.row(InlineKeyboardButton("Вперед", callback_data=f"closed_page_{page+1}"))
 
     return markup
+  
 @dp.message_handler(commands=['start'], state='*')
 async def cmd_start(message: types.Message, state: FSMContext) -> None:
     await bot.send_message(chat_id=message.from_user.id,
@@ -286,6 +278,19 @@ async def load_it_info(message: types.Message, state: FSMContext) -> None:
                           text="Приоритет:",
                           reply_markup=priority_kb())
             await ProfileStatesGroup.priority.set()
+
+@dp.callback_query_handler(lambda callback_query: callback_query.data.startswith('closed_page_'), state="*")
+async def handle_page_change(callback_query: types.CallbackQuery, state: FSMContext):
+    # Получаем номер страницы из callback_data
+    page_number = int(callback_query.data.split('_')[-1])
+
+    # Получаем новую разметку с обновленными данными для новой страницы
+    new_markup = await closed_incidents(page=page_number)
+
+    # Обновляем сообщение с новой разметкой
+    await bot.edit_message_reply_markup(chat_id=callback_query.message.chat.id,
+                                        message_id=callback_query.message.message_id,
+                                        reply_markup=new_markup)
 
 @dp.callback_query_handler(state=ProfileStatesGroup.recovery_incident)
 async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
