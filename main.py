@@ -292,7 +292,7 @@ async def edu_keyboard(callback_query: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['choose'] = callback_query.data
         dates = await baza.select_closed_incident(data['choose'])
-        if dates[7] is not None:
+        if dates and dates[7] is not None:
             await bot.send_message(CHANNEL_ID, f"{dates[2]}\n"
                                            f"🆕ОТКРЫТ Инц. №{dates[1]}\n"
                                            f"{dates[3]}\n"
