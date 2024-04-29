@@ -138,7 +138,7 @@ async def closed_incidents(page=0) -> InlineKeyboardMarkup:
     incidents_list = await baza.closed_incidents()
 
     # Количество инцидентов на одной странице
-    incidents_per_page = 6
+    incidents_per_page = 50
 
     # Вычисляем индексы начала и конца текущей страницы
     start_index = page * incidents_per_page
